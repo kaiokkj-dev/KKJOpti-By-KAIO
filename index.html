@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKJOpti by Kaio</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <h1>KKJ<span>Opti</span></h1>
+        <p>by Kaio</p>
+      </div>
+      <nav class="menu">
+        <button class="menu-item active"><i data-lucide="rocket"></i>OTIMIZAR</button>
+        <button class="menu-item"><i data-lucide="zap"></i>INICIALIZAR</button>
+        <button class="menu-item"><i data-lucide="monitor"></i>WINDOWS</button>
+        <button class="menu-item"><i data-lucide="wifi"></i>INTERNET</button>
+        <button class="menu-item"><i data-lucide="cpu"></i>PLACA DE VIDEO</button>
+        <button class="menu-item"><i data-lucide="memory-stick"></i>MEMORIA RAM</button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="premium-btn">Pack Premium</button>
+      </div>
+    </aside>
+    <!-- Conteúdo principal -->
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Otimizar</h2>
+          <p>Selecione as otimizações e clique em aplicar</p>
+        </div>
+        <button class="apply-btn">Aplicar</button>
+      </header>
+      <!-- Tabs -->
+      <section class="tabs">
+        <button class="tab active">Performance</button>
+        <button class="tab">Ao ligar PC</button>
+        <button class="tab">Programas</button>
+      </section>
+      <!-- Lista de otimizações -->
+      <section class="cards">
+        <div class="card">
+          <div class="card-info">
+            <h3>Limpar arquivos temporários</h3>
+            <p>Remove arquivos temporários do sistema</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card">
+          <div class="card-info">
+            <h3>Flush DNS</h3>
+            <p>Atualiza o cache de rede</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card">
+          <div class="card-info">
+            <h3>Desativar telemetria</h3>
+            <p>Reduz processos de rastreamento</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card">
+          <div class="card-info">
+            <h3>Melhorar resposta do sistema</h3>
+            <p>Ajustes para melhor desempenho geral</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="card">
+          <div class="card-info">
+            <h3>Otimizar inicialização</h3>
+            <p>Reduz carga desnecessária ao iniciar</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </section>
+    </main>
+  </div>
+<script>
+lucide.createIcons();
+</script>
+</body>
+</html>
