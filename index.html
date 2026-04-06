@@ -6,26 +6,23 @@
   <title>KKJOpti by Kaio</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="app">
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="logo">
-        <h1>KKJ<span>Opti</span></h1>
-        <p>by Kaio</p>
+        <img src="assets/kkjlogo1.png" class="logo-img">
       </div>
       <nav class="menu">
         <button class="menu-item active"><i data-lucide="rocket"></i>OTIMIZAR</button>
-        <button class="menu-item"><i data-lucide="zap"></i>INICIALIZAR</button>
+        <button class="menu-item"><i data-lucide="zap"></i>INICIALIZAR<span class="dot"></span></button>
         <button class="menu-item"><i data-lucide="monitor"></i>WINDOWS</button>
         <button class="menu-item"><i data-lucide="wifi"></i>INTERNET</button>
         <button class="menu-item"><i data-lucide="cpu"></i>PLACA DE VIDEO</button>
         <button class="menu-item"><i data-lucide="memory-stick"></i>MEMORIA RAM</button>
       </nav>
-      <div class="sidebar-footer">
-        <button class="premium-btn">Pack Premium</button>
-      </div>
     </aside>
     <!-- Conteúdo principal -->
     <main class="main-content">
@@ -34,7 +31,7 @@
           <h2>Otimizar</h2>
           <p>Selecione as otimizações e clique em aplicar</p>
         </div>
-        <button class="apply-btn">Aplicar</button>
+        <button class="btn-sweep"><span>Aplicar</span></button>
       </header>
       <!-- Tabs -->
       <section class="tabs">
@@ -45,9 +42,14 @@
       <!-- Lista de otimizações -->
       <section class="cards">
         <div class="card">
-          <div class="card-info">
-            <h3>Limpar arquivos temporários</h3>
-            <p>Remove arquivos temporários do sistema</p>
+          <div class="card-left">
+            <div class="icon">
+              <i data-lucide="folder"></i>
+            </div>
+            <div class="card-info">
+              <h3>Limpar arquivos temporários</h3>
+              <p>Remove arquivos temporários do sistema</p>
+            </div>
           </div>
           <label class="switch">
             <input type="checkbox" checked />
@@ -97,6 +99,10 @@
       </section>
     </main>
   </div>
+      <!-- FOOTER -->
+  <footer class="footer-min">
+    <div class="footer-min-inner">
+      <p>© <span id="year"></span> Kaio Henrique. All rights reserved</p>
 <script>
 lucide.createIcons();
 </script>
