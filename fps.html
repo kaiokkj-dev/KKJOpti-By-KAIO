@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKJOpti by Kaio - FPS Boost</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="assets/kkjlogo1.png" class="logo-img" alt="KKJOpti Logo">
+      </div>
+      <nav class="menu">
+        <button class="menu-item" onclick="window.location.href='index.html'">
+          <i data-lucide="rocket"></i>OTIMIZAR
+        </button>
+        <button class="menu-item active">
+          <i data-lucide="zap"></i>FPS BOOST<span class="dot"></span>
+        </button>
+        <button class="menu-item" onclick="window.location.href='internet.html'">
+          <i data-lucide="wifi"></i>INTERNET
+        </button>
+        <button class="menu-item" onclick="window.location.href='gpu.html'">
+          <i data-lucide="cpu"></i>PLACA DE VIDEO
+        </button>
+        <button class="menu-item" onclick="window.location.href='ram.html'">
+          <i data-lucide="memory-stick"></i>MEMORIA RAM
+        </button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>FPS Boost</h2>
+          <p>Selecione as otimizações para melhorar FPS e reduzir travamentos</p>
+        </div>
+        <button class="btn-sweep"><span>Aplicar</span></button>
+      </header>
+      <section class="tabs">
+        <button class="tab active">Performance</button>
+        <button class="tab">Latência</button>
+        <button class="tab">Sistema</button>
+      </section>
+      <div class="main">
+        <section class="cards">
+          <!-- PERFORMANCE / FPS -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="gauge"></i></div>
+              <div class="card-info">
+                <h3>+FPS Boost</h3>
+                <p>Aumenta desempenho geral em jogos</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="gamepad-2"></i></div>
+              <div class="card-info">
+                <h3>Game Boost Mode</h3>
+                <p>Otimiza o sistema para rodar jogos com mais fluidez</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="video-off"></i></div>
+              <div class="card-info">
+                <h3>Disable Game DVR</h3>
+                <p>Remove gravações em segundo plano para liberar FPS</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="monitor-x"></i></div>
+              <div class="card-info">
+                <h3>Fullscreen Optimization Off</h3>
+                <p>Evita interferência do Windows em jogos fullscreen</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="timer-reset"></i></div>
+              <div class="card-info">
+                <h3>Timer Resolution Boost</h3>
+                <p>Melhora precisão do sistema e reduz input lag</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- CPU / SISTEMA -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="cpu"></i></div>
+              <div class="card-info">
+                <h3>CPU Priority Boost</h3>
+                <p>Aumenta prioridade dos processos ativos</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="activity"></i></div>
+              <div class="card-info">
+                <h3>Disable Core Parking</h3>
+                <p>Mantém todos núcleos ativos para máximo desempenho</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="sliders-horizontal"></i></div>
+              <div class="card-info">
+                <h3>Processor Scheduling</h3>
+                <p>Prioriza programas em vez de serviços</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="zap"></i></div>
+              <div class="card-info">
+                <h3>System Responsiveness Boost</h3>
+                <p>Melhora resposta geral do sistema</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- MEMÓRIA / RAM -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="memory-stick"></i></div>
+              <div class="card-info">
+                <h3>Memory Optimization</h3>
+                <p>Ajusta uso da RAM para melhor desempenho</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="archive-x"></i></div>
+              <div class="card-info">
+                <h3>Disable Memory Compression</h3>
+                <p>Evita compressão de memória que pode causar lag</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="database"></i></div>
+              <div class="card-info">
+                <h3>Cache Boost</h3>
+                <p>Melhora uso de cache para carregamentos mais rápidos</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- REDE / LATÊNCIA -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="wifi"></i></div>
+              <div class="card-info">
+                <h3>Network Boost</h3>
+                <p>Reduz latência em jogos online</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="network"></i></div>
+              <div class="card-info">
+                <h3>TCP Optimization</h3>
+                <p>Ajusta conexões para estabilidade e velocidade</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="signal-high"></i></div>
+              <div class="card-info">
+                <h3>Disable Network Throttling</h3>
+                <p>Remove limite de rede do Windows</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- INPUT / GAMER -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="mouse"></i></div>
+              <div class="card-info">
+                <h3>Mouse Fix</h3>
+                <p>Remove aceleração do mouse</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="keyboard"></i></div>
+              <div class="card-info">
+                <h3>Keyboard Response Boost</h3>
+                <p>Reduz delay do teclado</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="mouse-pointer-click"></i></div>
+              <div class="card-info">
+                <h3>Input Lag Reduction</h3>
+                <p>Diminui atraso geral de input</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- PRIVACIDADE -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="shield-off"></i></div>
+              <div class="card-info">
+                <h3>Disable Telemetry</h3>
+                <p>Desativa coleta de dados do sistema</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="eye-off"></i></div>
+              <div class="card-info">
+                <h3>Disable Tracking</h3>
+                <p>Remove rastreamento de uso</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="bot-off"></i></div>
+              <div class="card-info">
+                <h3>Disable Cortana</h3>
+                <p>Desativa assistente do Windows</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <!-- WINDOWS TWEAKS -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="sparkles"></i></div>
+              <div class="card-info">
+                <h3>Disable Animations</h3>
+                <p>Remove efeitos visuais para mais desempenho</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="folder-open"></i></div>
+              <div class="card-info">
+                <h3>Explorer Speed</h3>
+                <p>Aumenta velocidade do explorador de arquivos</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="power"></i></div>
+              <div class="card-info">
+                <h3>Fast Shutdown</h3>
+                <p>Diminui tempo de desligamento</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="bell-off"></i></div>
+              <div class="card-info">
+                <h3>Disable Notifications</h3>
+                <p>Remove notificações do sistema</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
