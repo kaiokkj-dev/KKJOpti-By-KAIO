@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKJOpti by Kaio - Internet Boost</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="assets/kkjlogo1.png" class="logo-img">
+      </div>
+      <nav class="menu">
+        <button class="menu-item" onclick="window.location.href='index.html'">
+          <i data-lucide="rocket"></i>OTIMIZAR
+        </button>
+        <button class="menu-item" onclick="window.location.href='fps.html'">
+          <i data-lucide="zap"></i>FPS BOOST
+        </button>
+        <button class="menu-item active">
+          <i data-lucide="wifi"></i>INTERNET<span class="dot"></span>
+        </button>
+        <button class="menu-item" onclick="window.location.href='gpu.html'">
+          <i data-lucide="cpu"></i>PLACA DE VIDEO
+        </button>
+        <button class="menu-item">
+          <i data-lucide="memory-stick"></i>MEMORIA RAM
+        </button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Internet / Ping Boost</h2>
+          <p>Selecione as otimizações para reduzir ping e melhorar estabilidade</p>
+        </div>
+        <button class="btn-sweep"><span>Aplicar</span></button>
+      </header>
+      <div class="main">
+        <section class="cards">
+          <!-- REDE -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="wifi"></i></div>
+              <div class="card-info">
+                <h3>Desativar Limitação de Rede</h3>
+                <p>Remove limite de banda do Windows</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="zap"></i></div>
+              <div class="card-info">
+                <h3>Net Speed Boost</h3>
+                <p>Otimiza velocidade da conexão</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="terminal"></i></div>
+              <div class="card-info">
+                <h3>Otimizar Internet (CMD)</h3>
+                <p>Executa script de otimização</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <!-- LATENCIA -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="activity"></i></div>
+              <div class="card-info">
+                <h3>Ping Boost</h3>
+                <p>Reduz latência geral da conexão</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="refresh-cw"></i></div>
+              <div class="card-info">
+                <h3>Flush DNS</h3>
+                <p>Atualiza cache de rede</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="network"></i></div>
+              <div class="card-info">
+                <h3>TCP Optimization</h3>
+                <p>Melhora estabilidade da conexão</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="signal"></i></div>
+              <div class="card-info">
+                <h3>Network Priority</h3>
+                <p>Prioriza tráfego de jogos</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <!-- SISTEMA REDE -->
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="shield"></i></div>
+              <div class="card-info">
+                <h3>Disable Network Throttling</h3>
+                <p>Remove limitação interna do Windows</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon"><i data-lucide="globe"></i></div>
+              <div class="card-info">
+                <h3>DNS Boost</h3>
+                <p>Melhora resposta de servidores</p>
+              </div>
+            </div>
+            <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

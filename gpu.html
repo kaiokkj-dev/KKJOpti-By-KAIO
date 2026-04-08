@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KKJOpti by Kaio - GPU</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    .gpu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      width: 100%;
+    }
+    .gpu-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .gpu-header-card {
+      min-height: 98px;
+      border-radius: 22px;
+      padding: 22px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(10px);
+    }
+
+.gpu-header-card.nvidia {
+  background: linear-gradient(90deg, rgba(20,35,10,0.95), rgba(7,10,7,0.98));
+  box-shadow: 0 0 30px rgba(124, 255, 0, 0.16);
+  border: 1px solid rgba(124, 255, 0, 0.35);
+}
+    .gpu-header-card.nvidia:hover{
+      box-shadow: 0 0 35px rgba(124,255,0,0.12);
+    }
+    .gpu-brand-card.nvidia::before {
+  box-shadow: inset 0 0 35px rgba(124,255,0,0.12);
+}
+.gpu-header-card.amd {
+  background: linear-gradient(90deg, rgba(35,8,8,0.95), rgba(12,6,6,0.98));
+  box-shadow: 0 0 30px rgba(255, 0, 60, 0.16);
+  border: 1px solid rgba(255, 0, 60, 0.35);
+}
+
+    .gpu-name {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .gpu-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      line-height: 1;
+    }
+
+    .gpu-count {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .gpu-label {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      color: rgba(255, 255, 255, 0.72);
+    }
+
+    @media (max-width: 980px) {
+      .gpu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="gpu-page">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="assets/kkjlogo1.png" class="logo-img" alt="KKJOpti Logo">
+      </div>
+
+      <nav class="menu">
+        <button class="menu-item" onclick="window.location.href='index.html'">
+          <i data-lucide="rocket"></i>OTIMIZAR
+        </button>
+
+        <button class="menu-item" onclick="window.location.href='fps.html'">
+          <i data-lucide="zap"></i>FPS BOOST
+        </button>
+        <button class="menu-item" onclick="window.location.href='internet.html'">
+          <i data-lucide="wifi"></i>INTERNET
+        </button>
+        <button class="menu-item active">
+          <i data-lucide="cpu"></i>PLACA DE VIDEO<span class="dot"></span>
+        </button>
+        <button class="menu-item" onclick="window.location.href='ram.html'">
+          <i data-lucide="memory-stick"></i>MEMORIA RAM
+        </button>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Placa de Vídeo</h2>
+          <p>Selecione as otimizações da sua GPU</p>
+        </div>
+        <button class="btn-sweep"><span>Aplicar</span></button>
+      </header>
+      <div class="main">
+        <section class="gpu-grid">
+          <!-- NVIDIA -->
+          <div class="gpu-column">
+            <div class="gpu-header-card nvidia">
+              <div class="gpu-name">NVIDIA</div>
+              <div class="gpu-meta">
+                <span class="gpu-count">2</span>
+                <span class="gpu-label">OPÇÕES</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-left">
+                <div class="icon">
+                  <i data-lucide="file-text"></i>
+                </div>
+                <div class="card-info">
+                  <h3>NVIDIA Thread Priority.reg</h3>
+                  <p>Prioridade de threads NVIDIA</p>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="card">
+              <div class="card-left">
+                <div class="icon">
+                  <i data-lucide="rotate-ccw"></i>
+                </div>
+                <div class="card-info">
+                  <h3>Revert NVIDIA.reg</h3>
+                  <p>Reverte configurações NVIDIA</p>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+          <!-- AMD -->
+          <div class="gpu-column">
+            <div class="gpu-header-card amd">
+              <div class="gpu-name">AMD</div>
+              <div class="gpu-meta">
+                <span class="gpu-count">2</span>
+                <span class="gpu-label">OPÇÕES</span>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-left">
+                <div class="icon">
+                  <i data-lucide="file-text"></i>
+                </div>
+                <div class="card-info">
+                  <h3>AMD Thread Priority.reg</h3>
+                  <p>Prioridade de threads AMD</p>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="card">
+              <div class="card-left">
+                <div class="icon">
+                  <i data-lucide="rotate-ccw"></i>
+                </div>
+                <div class="card-info">
+                  <h3>Revert AMD.reg</h3>
+                  <p>Reverte configurações AMD</p>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

@@ -17,9 +17,9 @@
       <nav class="menu">
         <button class="menu-item active"><i data-lucide="rocket"></i>OTIMIZAR</button>
         <button class="menu-item" onclick="window.location.href='fps.html'"><i data-lucide="zap"></i>FPS BOOST<span class="dot"></span></button>
-        <button class="menu-item"><i data-lucide="wifi"></i>INTERNET</button>
-        <button class="menu-item"><i data-lucide="cpu"></i>PLACA DE VIDEO</button>
-        <button class="menu-item"><i data-lucide="memory-stick"></i>MEMORIA RAM</button>
+        <button class="menu-item" onclick="window.location.href='internet.html'"><i data-lucide="wifi"></i>INTERNET</button>
+        <button class="menu-item" onclick="window.location.href='gpu.html'" ><i data-lucide="cpu"></i>PLACA DE VIDEO</button>
+        <button class="menu-item" onclick="window.location.href='ram.html'" ><i data-lucide="memory-stick"></i>MEMORIA RAM</button>
       </nav>
     </aside>
     <main class="main-content">
@@ -28,7 +28,10 @@
           <h2>Otimizar</h2>
           <p>Selecione as otimizações e clique em aplicar</p>
         </div>
-        <button class="btn-sweep"><span>Aplicar</span></button>
+<div style="display:flex; gap:10px;">
+  <button class="btn-sweep outline" onclick="marcarTodos()">Todos</button>
+  <button class="btn-sweep"><span>Aplicar</span></button>
+</div>
       </header>
       <section class="tabs">
         <button class="tab active">Performance</button>
@@ -36,173 +39,132 @@
         <button class="tab">Programas</button>
       </section>
       <div class="main">
-        <section class="cards">
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="folder"></i>
-              </div>
-              <div class="card-info">
-                <h3>Limpar arquivos temporários</h3>
-                <p>Remove arquivos temporários do sistema</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="refresh-cw"></i>
-              </div>
-              <div class="card-info">
-                <h3>Flush DNS</h3>
-                <p>Atualiza o cache de rede</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="eye-off"></i>
-              </div>
-              <div class="card-info">
-                <h3>Desativar telemetria</h3>
-                <p>Reduz processos de rastreamento</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="activity"></i>
-              </div>
-              <div class="card-info">
-                <h3>Melhorar resposta do sistema</h3>
-                <p>Performance visual e serviços</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="zap"></i>
-              </div>
-              <div class="card-info">
-                <h3>Clean Windows</h3>
-                <p>Rotina completa de limpeza</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="database"></i>
-              </div>
-              <div class="card-info">
-                <h3>Limpador de Cache / Clean Temp</h3>
-                <p>Limpar Caches e Temp</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="rocket"></i>
-              </div>
-              <div class="card-info">
-                <h3>Otimizar inicialização</h3>
-                <p>Startup e tarefas desnecessárias</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="gamepad-2"></i>
-              </div>
-              <div class="card-info">
-                <h3>Input Delay Reduction</h3>
-                <p>Tweaks de input</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="cpu"></i>
-              </div>
-              <div class="card-info">
-                <h3>Processor Scheduling</h3>
-                <p>Priorização de programas</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="cpu"></i>
-              </div>
-              <div class="card-info">
-                <h3>Liberar uso de CPU</h3>
-                <p>Finalizar processos leves/pesados ou ajustar plano</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon">
-                <i data-lucide="zap"></i>
-              </div>
-              <div class="card-info">
-                <h3>Decrease Load</h3>
-                <p>Reduzir carga de serviços/processos</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox"  />
-              <span class="slider"></span>
-            </label>
-          </div>
-        </section>
+<section class="cards">
+  <!-- LIMPEZA -->
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="folder"></i></div>
+      <div class="card-info">
+        <h3>Limpar arquivos temporários</h3>
+        <p>Remove arquivos desnecessários do sistema</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="database"></i></div>
+      <div class="card-info">
+        <h3>Limpeza de Cache</h3>
+        <p>Remove cache e melhora desempenho geral</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="zap"></i></div>
+      <div class="card-info">
+        <h3>Clean Windows</h3>
+        <p>Rotina completa de limpeza do sistema</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <!-- REDE -->
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="refresh-cw"></i></div>
+      <div class="card-info">
+        <h3>Flush DNS</h3>
+        <p>Atualiza cache de rede e melhora conexão</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="wifi"></i></div>
+      <div class="card-info">
+        <h3>Network Boost</h3>
+        <p>Melhora estabilidade e velocidade da rede</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <!-- SISTEMA -->
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="eye-off"></i></div>
+      <div class="card-info">
+        <h3>Desativar telemetria</h3>
+        <p>Remove processos de rastreamento do sistema</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="activity"></i></div>
+      <div class="card-info">
+        <h3>System Responsiveness</h3>
+        <p>Melhora resposta geral do Windows</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="rocket"></i></div>
+      <div class="card-info">
+        <h3>Otimizar inicialização</h3>
+        <p>Remove programas desnecessários do startup</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <!-- DESEMPENHO -->
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="gamepad-2"></i></div>
+      <div class="card-info">
+        <h3>Input Delay Reduction</h3>
+        <p>Reduz atraso de resposta em jogos</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="cpu"></i></div>
+      <div class="card-info">
+        <h3>Processor Scheduling</h3>
+        <p>Prioriza programas ativos</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="cpu"></i></div>
+      <div class="card-info">
+        <h3>Liberar uso de CPU</h3>
+        <p>Finaliza processos desnecessários</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+  <div class="card">
+    <div class="card-left">
+      <div class="icon"><i data-lucide="zap"></i></div>
+      <div class="card-info">
+        <h3>Decrease Load</h3>
+        <p>Reduz carga do sistema para melhor desempenho</p>
+      </div>
+    </div>
+    <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+  </div>
+</section>
       </div>
     </main>
   </div>
