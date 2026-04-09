@@ -74,10 +74,44 @@ html, body {
 }
 .logo {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  margin-top: -10px;
-  color: #000000;
+  padding: 20px 0 10px;
+}
+.logo-img {
+  width: 120px;
+  margin-bottom: -55px;
+}
+.logo-divider {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;   /* centraliza o texto */
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 14px;
+}
+.logo-divider::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: rgba(0, 255, 136, 0.22);
+  transform: translateY(-50%);
+}
+.logo-subtitle {
+  position: relative;
+  z-index: 1;
+  display: inline-block;
+  padding: 0 10px;
+  background: #06110b; /* mesma cor do fundo da sidebar */
+  color: #22c55e;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-align: center;
+  white-space: nowrap;
 }
 .logo img {
   width: 200px;
@@ -128,6 +162,7 @@ html, body {
 .menu-item:hover {
   border: 2px solid #015e20;
   box-shadow: 0 0 20px #0035125d;
+  transform: translateY(-3px);
 }
 .sidebar-footer {
   margin-top: 20px;
@@ -148,26 +183,6 @@ html, body {
   color: #b6b8b7cd;
   font-weight: 700;
 }
-.btn-sweep:not(.outline):hover{
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(0,0,0,0.45);
-}
-.btn-sweep.outline{
-    background: transparent;
-    color: white;
-    border: 2px solid #22c55e;
-}
-.btn-sweep:hover::before{
-    transform: translateX(0);
-}
-.btn-sweep.outline::before{
-    background: #22c55e;
-}
-.btn-sweep:hover.outline{
-    color: #06110b;
-    transform: translateY(-2px);
-}
 .btn-sweep{
     position: relative;
     overflow: hidden;
@@ -180,17 +195,29 @@ html, body {
     font-weight: 800;
     text-transform: uppercase;
     text-decoration: none;
-    color: #07110d;
+    color: #06110b;
     background: #22c55e;
     border: 2px solid rgba(34,197,94,0.25);
     transition: color .25s ease, transform .18s ease, box-shadow .25s ease;
     z-index: 1;
     border-radius: 10px;
 }
+.btn-sweep::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: #0B0F0E;
+    transform: translateX(-110%);
+    transition: transform .35s ease;
+    z-index: 0;
+}
+/* garante que texto fique acima do ::before */
 .btn-sweep > *{
     position: relative;
     z-index: 1;
 }
+
+/* Hover padrão */
 .btn-sweep:not(.outline):hover{
     color: white;
     transform: translateY(-2px);
@@ -199,20 +226,41 @@ html, body {
 .btn-sweep:hover::before{
     transform: translateX(0);
 }
-.btn-sweep::before{
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: #07110d;
-    transform: translateX(-110%);
-    transition: transform .35s ease;
-    z-index: 0;
-}
-.btn-sweep:not(.outline):hover{
+/* Versão outline (GitHub) */
+.btn-sweep.outline{
+    background: transparent;
     color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 12px 26px rgba(0,0,0,0.45);
+    border: 2px solid #22c55e;
 }
+.btn-sweep.outline::before{
+    background: #22c55e;
+}
+.btn-sweep:hover.outline{
+    color: #06110b;
+    transform: translateY(-2px);
+}
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+/* parte de baixo */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 15px;
+}
+/* botão */
+.footer-btn {
+  width: 100%;
+  
+  transition: 0.2s;
+  border: 2px solid rgba(34,197,94,0.25);
+}
+
+.footer-btn:hover {
+  opacity: 1;
+}
+
 
 .tabs {
   display: flex;

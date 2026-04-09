@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KKJOpti by Kaio - Programas</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="assets/kkjlogo1.png" class="logo-img">
+        <div class="logo-divider">
+          <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
+        </div>
+      </div>
+      <nav class="menu">
+        <button class="menu-item" onclick="window.location.href='index.html'">
+          <i data-lucide="rocket"></i>OTIMIZAR
+        </button>
+        <button class="menu-item" onclick="window.location.href='fps.html'">
+          <i data-lucide="zap"></i>FPS BOOST
+        </button>
+        <button class="menu-item" onclick="window.location.href='internet.html'">
+          <i data-lucide="wifi"></i>INTERNET
+        </button>
+        <button class="menu-item" onclick="window.location.href='gpu.html'">
+          <i data-lucide="cpu"></i>PLACA DE VIDEO
+        </button>
+        <button class="menu-item" onclick="window.location.href='ram.html'">
+          <i data-lucide="memory-stick"></i>MEMORIA RAM
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="menu-item footer-btn" onclick="window.open('https://www.linkedin.com/in/kaiohenrique-dev/')">
+          <i data-lucide="message-circle"></i>
+          FEEDBACK
+        </button>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h2>Programas</h2>
+          <p>Ative os utilitários recomendados para limpeza e otimização do sistema</p>
+        </div>
+        <button class="btn-sweep">
+          <span>Aplicar</span>
+        </button>
+      </header>
+            <section class="tabs">
+        <button class="tab" onclick="window.location.href='index.html'">Performance</button>
+        <button class="tab active" onclick="window.location.href='programas.html'">Programas</button>
+      </section>
+      <div class="main">
+        <section class="cards">
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="package"></i>
+              </div>
+              <div class="card-info">
+                <h3>10AppsManager</h3>
+                <p>Remove apps nativos do Windows</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="sparkles"></i>
+              </div>
+              <div class="card-info">
+                <h3>BleachBit</h3>
+                <p>Limpeza avançada de arquivos temporários e cache</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="hard-drive"></i>
+              </div>
+              <div class="card-info">
+                <h3>Limpar Disco</h3>
+                <p>Executa a limpeza de disco integrada do Windows</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="monitor"></i>
+              </div>
+              <div class="card-info">
+                <h3>Limpeza Windows</h3>
+                <p>Remove arquivos desnecessários do sistema</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="memory-stick"></i>
+              </div>
+              <div class="card-info">
+                <h3>Otimizador de Memória</h3>
+                <p>Melhora o uso de RAM e reduz consumo em segundo plano</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="card">
+            <div class="card-left">
+              <div class="icon">
+                <i data-lucide="shield-check"></i>
+              </div>
+              <div class="card-info">
+                <h3>AdwCleaner</h3>
+                <p>Remove adwares, barras e programas indesejados</p>
+              </div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

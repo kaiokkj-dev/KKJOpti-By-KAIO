@@ -11,9 +11,12 @@
 <body>
   <div class="app">
     <aside class="sidebar">
-      <div class="logo">
-        <img src="assets/kkjlogo1.png" class="logo-img">
-      </div>
+<div class="logo">
+  <img src="assets/kkjlogo1.png" class="logo-img">
+  <div class="logo-divider">
+    <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
+  </div>
+</div>
       <nav class="menu">
         <button class="menu-item" onclick="window.location.href='index.html'">
           <i data-lucide="rocket"></i>OTIMIZAR
@@ -27,10 +30,16 @@
         <button class="menu-item" onclick="window.location.href='gpu.html'">
           <i data-lucide="cpu"></i>PLACA DE VIDEO
         </button>
-        <button class="menu-item">
+        <button class="menu-item" onclick="window.location.href='ram.html'">
           <i data-lucide="memory-stick"></i>MEMORIA RAM
         </button>
       </nav>
+            <div class="sidebar-footer">
+<button class="menu-item footer-btn" onclick="window.open('https://www.linkedin.com/in/kaiohenrique-dev/')">
+  <i data-lucide="message-circle"></i>
+  FEEDBACK
+</button>
+</div>
     </aside>
     <main class="main-content">
       <header class="topbar">
@@ -38,7 +47,11 @@
           <h2>Internet / Ping Boost</h2>
           <p>Selecione as otimizações para reduzir ping e melhorar estabilidade</p>
         </div>
-        <button class="btn-sweep"><span>Aplicar</span></button>
+<div style="display:flex; gap:10px;">
+  <button class="btn-sweep outline" onclick="marcarTodos()"><span>
+    TODOS</span></button>
+  <button class="btn-sweep"><span>Aplicar</span></button>
+</div>
       </header>
       <div class="main">
         <section class="cards">
