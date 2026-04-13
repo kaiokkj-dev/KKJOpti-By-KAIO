@@ -1,12 +1,49 @@
 {
   "name": "kkjopti",
   "version": "1.0.0",
+  "description": "Aplicativo de otimização KKJOpti",
+  "author": "Kaio",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder"
   },
   "devDependencies": {
-    "electron": "^30.0.0"
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.kaio.kkjopti",
+    "productName": "KKJOpti",
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "fps.html",
+      "gpu.html",
+      "internet.html",
+      "ram.html",
+      "programas.html",
+      "style.css",
+      "assets/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/kkjopti_icon.ico",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "installerIcon": "assets/kkjopti_icon.ico",
+      "uninstallerIcon": "assets/kkjopti_icon.ico",
+      "installerHeaderIcon": "assets/kkjopti_icon.ico"
+    },
+    "extraResources": [
+      {
+        "from": "scripts",
+        "to": "scripts"
+      }
+    ]
   }
-  
 }

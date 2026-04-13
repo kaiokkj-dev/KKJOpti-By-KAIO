@@ -12,7 +12,7 @@
   <div class="app">
     <aside class="sidebar">
       <div class="logo">
-        <img src="assets/kkjlogo1.png" class="logo-img">
+        <img src="assets/kkjopti_logo_bigger.png" class="logo-img">
         <div class="logo-divider">
           <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
         </div>
@@ -31,13 +31,14 @@
         <button class="menu-item" onclick="window.location.href='ram.html'">
           <i data-lucide="memory-stick"></i>MEMORIA RAM
         </button>
+        
+  <div class="sidebar-footer">
+    <button class="menu-item footer-btn" id="btnSobre">
+      <i data-lucide="message-circle"></i>
+      SOBRE
+    </button>
+  </div>
       </nav>
-      <div class="sidebar-footer">
-        <button class="menu-item footer-btn" onclick="window.open('https://www.linkedin.com/in/kaiohenrique-dev/')">
-          <i data-lucide="message-circle"></i>
-          FEEDBACK
-        </button>
-      </div>
     </aside>
     <main class="main-content">
       <header class="topbar">
@@ -47,7 +48,7 @@
         </div>
         <div style="display:flex; gap:10px;">
           <button class="btn-sweep outline" onclick="marcarTodos()">
-            <span>TODOS</span>
+            <span>Marcar Todos</span>
           </button>
           <button class="btn-sweep" onclick="aplicarMarcados()">
             <span>Aplicar</span>
@@ -190,7 +191,6 @@
               <span class="slider"></span>
             </label>
           </div>
-
           <div class="card">
             <div class="card-left">
               <div class="icon"><i data-lucide="cpu"></i></div>
@@ -252,9 +252,15 @@ if (window.electronAPI) {
 
 function marcarTodos() {
   const checkboxes = document.querySelectorAll('.switch input[type="checkbox"]');
-  checkboxes.forEach((checkbox) => {
-    checkbox.checked = true;
-  });
+  const botao = document.querySelector('.btn-sweep.outline span');
+  const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
+  if (todosMarcados) {
+    checkboxes.forEach(cb => cb.checked = false);
+    botao.textContent = 'Marcar Todos';
+  } else {
+    checkboxes.forEach(cb => cb.checked = true);
+    botao.textContent = 'Desmarcar';
+  }
 }
 
 function aplicarMarcados() {
@@ -286,6 +292,9 @@ function aplicarMarcados() {
     console.error('electronAPI não disponível');
   }
 }
+  document.getElementById('btnSobre').addEventListener('click', () => {
+    window.api.abrirLink('https://kaiohenrique.dev/');
+  });
 </script>
 </body>
 </html>

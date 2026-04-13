@@ -11,12 +11,12 @@
 <body>
   <div class="app">
     <aside class="sidebar">
-<div class="logo">
-  <img src="assets/kkjlogo1.png" class="logo-img">
-  <div class="logo-divider">
-    <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
-  </div>
-</div>
+      <div class="logo">
+        <img src="assets/kkjopti_logo_bigger.png" class="logo-img">
+        <div class="logo-divider">
+          <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
+        </div>
+      </div>
       <nav class="menu">
         <button class="menu-item" onclick="window.location.href='index.html'">
           <i data-lucide="rocket"></i>OTIMIZAR
@@ -33,13 +33,13 @@
         <button class="menu-item active">
           <i data-lucide="memory-stick"></i>MEMORIA RAM<span class="dot"></span>
         </button>
+ <div class="sidebar-footer">
+    <button class="menu-item footer-btn" id="btnSobre">
+      <i data-lucide="message-circle"></i>
+      SOBRE
+    </button>
+  </div>
       </nav>
-      <div class="sidebar-footer">
-<button class="menu-item footer-btn" onclick="window.open('https://www.linkedin.com/in/kaiohenrique-dev/')">
-  <i data-lucide="message-circle"></i>
-  FEEDBACK
-</button>
-</div>
     </aside>
     <main class="main-content">
       <header class="topbar">
@@ -47,7 +47,14 @@
           <h2>Memoria Ram</h2>
           <p>Selecione a configuração ideal para sua memória RAM</p>
         </div>
-        <button class="btn-sweep"><span>Aplicar</span></button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-sweep outline" onclick="marcarTodos()">
+            <span>Marcar Todos</span>
+          </button>
+          <button class="btn-sweep" onclick="aplicarMarcados()">
+            <span>Aplicar</span>
+          </button>
+        </div>
       </header>
       <div class="main">
         <section class="cards">
@@ -59,7 +66,10 @@
                 <p>Otimizado para sistemas com 2GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram2gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -69,7 +79,10 @@
                 <p>Otimizado para sistemas com 4GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram4gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -79,7 +92,10 @@
                 <p>Otimizado para sistemas com 6GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram6gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -89,7 +105,10 @@
                 <p>Otimizado para sistemas com 8GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram8gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -99,7 +118,10 @@
                 <p>Otimizado para sistemas com 12GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram12gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -109,7 +131,10 @@
                 <p>Otimizado para sistemas com 16GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram16gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -119,7 +144,10 @@
                 <p>Otimizado para sistemas com 24GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram24gb" />
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card">
             <div class="card-left">
@@ -129,14 +157,87 @@
                 <p>Otimizado para sistemas com 32GB de RAM</p>
               </div>
             </div>
-            <label class="switch"><input type="checkbox" /><span class="slider"></span></label>
+            <label class="switch">
+              <input type="checkbox" data-tipo="ram32gb" />
+              <span class="slider"></span>
+            </label>
           </div>
         </section>
+        <div id="popup-status" class="popup-status">
+          <div class="popup-box">
+            <h3 id="popup-title">Otimizando...</h3>
+            <p id="popup-text">Aguardando ação...</p>
+          </div>
+        </div>
       </div>
     </main>
   </div>
   <script>
     lucide.createIcons();
+    const popup = document.getElementById('popup-status');
+    const popupText = document.getElementById('popup-text');
+    const popupTitle = document.getElementById('popup-title');
+    if (window.electronAPI) {
+      window.electronAPI.onStatus((msg) => {
+        console.log('STATUS RAM:', msg);
+        if (popupTitle) popupTitle.textContent = 'Otimizando...';
+        if (popupText) popupText.textContent = msg;
+        if (popup) popup.classList.add('show');
+        if (
+          msg.includes('concluída') ||
+          msg.includes('concluido') ||
+          msg.includes('concluído') ||
+          msg.includes('Erro')
+        ) {
+          setTimeout(() => {
+            if (popup) popup.classList.remove('show');
+          }, 1200);
+        }
+      });
+    } else {
+      console.error('electronAPI não disponível');
+    }
+    function marcarTodos() {
+      const checkboxes = document.querySelectorAll('.switch input[type="checkbox"]');
+      const botao = document.querySelector('.btn-sweep.outline span');
+      const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
+      if (todosMarcados) {
+        checkboxes.forEach(cb => cb.checked = false);
+        if (botao) botao.textContent = 'Marcar Todos';
+      } else {
+        checkboxes.forEach(cb => cb.checked = true);
+        if (botao) botao.textContent = 'Desmarcar';
+      }
+    }
+    function aplicarMarcados() {
+      const marcados = document.querySelectorAll('.switch input[type="checkbox"]:checked');
+      const tipos = [];
+      marcados.forEach((checkbox) => {
+        tipos.push(checkbox.getAttribute('data-tipo'));
+      });
+      if (tipos.length === 0) {
+        if (popupTitle) popupTitle.textContent = 'Aviso';
+        if (popupText) popupText.textContent = 'Nada selecionado.';
+        if (popup) popup.classList.add('show');
+        setTimeout(() => {
+          if (popup) popup.classList.remove('show');
+        }, 1200);
+        return;
+      }
+      if (popupTitle) popupTitle.textContent = 'Otimizando...';
+      if (popupText) popupText.textContent = 'Iniciando otimização...';
+      if (popup) popup.classList.add('show');
+      if (window.electronAPI) {
+        window.electronAPI.executarLote(tipos);
+      } else {
+        console.error('electronAPI não disponível');
+        if (popupTitle) popupTitle.textContent = 'Erro';
+        if (popupText) popupText.textContent = 'electronAPI não disponível';
+        setTimeout(() => {
+          if (popup) popup.classList.remove('show');
+        }, 1200);
+      }
+    }
   </script>
 </body>
 </html>
