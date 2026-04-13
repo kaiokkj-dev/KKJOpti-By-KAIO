@@ -1,0 +1,29 @@
+Thank you for downloading 10AppsManager for Windows 10
+
+10AppsManager is a freeware tool that will help you uninstall and reinstall the default preinstalled Store apps on Windows 10, 32-bit & 64-bit. 
+
+It does not require an install. Extract the contents of the downloaded 10AppsManager zip file and place the  folder in your Program Folder and pin the shortcut of its exe file to your Start Menu. Simply run its .exe file. Do not seperate out the contents of the Program folder.
+
+To uninstall it, simply delete the program folder.
+
+Do visit its home page at http://www.thewindowsclub.com/10appsmanager-windows-10 for more details.
+
+It is always recommended to create a system restore point before making any changes to your system. The publisher or the author assumes no liability for damages, direct or consequential, which may result from the use of this freeware.
+
+The licensing terms have meen mentioned in the About tab of the freeware.
+
+This program has been developed by Lavish Thakkar for TheWindowsClub.com.
+
+Regards,
+Anand Khanse
+www.TheWindowsClub.com.
+
+10AppsManager v 2 Change Log
+
+1. Included 11 more applications that can be uninstalled using this tool.
+2. Certain UI changes and tweaks.
+3. Automated the task of reinstalling application. (Earlier users had to manually follow the on screen instructions.)
+4. Added the ability to uninstall all default applications at once. (only from currently logged in account)
+5. Changed Privelege settings. Now the application automatically asks for Administrator access. No need to manually do it.
+6. Changed Assembly Information and updated the version number.
+
