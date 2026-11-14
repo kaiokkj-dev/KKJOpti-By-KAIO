@@ -1,132 +1,74 @@
-# 🚀 KKJOpti by Kaio
+# 🚀 KKJOpti 2.0
 
-Aplicativo desktop focado em **otimização de desempenho do Windows**, com ajustes rápidos para **FPS**, **internet**, **sistema** e **inicialização**, tudo em uma interface simples e moderna.
+Painel desktop de **otimização para Windows** feito em Electron. Cada ação mostra exatamente o que vai executar, tem nível de risco, e a maioria pode ser **revertida** pelo próprio app.
 
----
+## ⚙️ O que o app faz
 
-## 🧠 Sobre o projeto
+- **Performance:** limpeza de temporários e cache de shaders, telemetria, plano de energia, efeitos visuais
+- **Jogos e FPS:** Game DVR, tela cheia, dynamic tick, core parking, mouse e teclado
+- **Internet:** DNS, ajustes TCP, Network Throttling, QoS
+- **Placa de vídeo:** prioridade da tarefa multimídia "Games" (NVIDIA / AMD)
+- **Memória RAM:** perfil recomendado conforme a RAM detectada
+- **Ferramentas:** atalhos para ferramentas oficiais do Windows e "Reparar rede"
 
-O **KKJOpti** foi criado para facilitar a aplicação de otimizações no Windows sem que o usuário precise alterar manualmente registros, serviços e configurações avançadas do sistema.
+### Segurança
 
-O projeto usa uma interface feita em **Electron** com páginas em **HTML, CSS e JavaScript**, além de scripts `.bat` e `.reg` responsáveis por aplicar as otimizações no sistema operacional.
+- Execução em **fila** (uma ação por vez), com **tempo limite** de 5 minutos por ação
+- **Snapshot do registro** (`reg export`) antes de cada `.reg` aplicado, restaurável pelo **Histórico**
+- **Arquivo de reversão** (`restore_*.bat` / `restore_*.reg`) para quase todas as ações
+- Opção de **ponto de restauração** do Windows antes de aplicar
+- Somente ações cadastradas em `optimizations.js` podem rodar; nada usa `shell: true`
 
----
-
-## ⚙️ Funcionalidades
-
-### 🟢 Otimização Geral
-- Ajustes para melhorar o desempenho do sistema
-- Redução de processos desnecessários
-- Melhor aproveitamento de recursos do PC
-
-### 🎮 FPS Boost
-- Tweaks para jogos
-- Redução de input lag
-- Ajustes no Windows para melhorar estabilidade e desempenho
-
-### 🖥️ Otimizações do Windows
-- Desativação de efeitos visuais
-- Ajustes de resposta do sistema
-- Melhorias gerais de fluidez
-
-### 🌐 Otimização de Internet
-- Redução de latência
-- Ajustes de rede
-- Melhor estabilidade de conexão
-
-### ⚡ Inicialização
-- Melhor gerenciamento da inicialização do sistema
-- Redução de carregamentos desnecessários ao ligar o PC
-
----
-
-## 🧱 Tecnologias utilizadas
-
-- **Electron.js**
-- **HTML5**
-- **CSS3**
-- **JavaScript**
-- **Scripts `.bat`**
-- **Scripts `.reg`**
-
----
-
-## 📁 Estrutura do projeto
+## 📁 Estrutura
 
 ```text
-KKJOpti/
-├── assets/          # Logos, ícones e imagens
-├── scripts/         # Scripts .bat e .reg usados nas otimizações
-├── index.html       # Página principal
-├── fps.html         # Página de FPS
-├── windows.html     # Página de otimizações do Windows
-├── internet.html    # Página de otimizações de internet
-├── style.css        # Estilos globais
-├── main.js          # Processo principal do Electron
-├── preload.js       # Comunicação segura entre front-end e Electron
-├── renderer.js      # Scripts da interface
-├── package.json     # Configuração do projeto
-└── README.md        # Documentação do projeto
+KKJOpti-2.0/
+├── assets/            # Ícone e logo
+├── scripts/           # .bat e .reg de cada ação + arquivos restore_*
+├── optimizations.js   # Catálogo: título, risco, categoria, arquivo e reversão de cada ação
+├── main.js            # Processo principal: fila, backups, histórico, IPC
+├── preload.js         # Ponte segura entre a interface e o main (window.kkj)
+├── renderer.js        # Interface
+├── index.html
+├── style.css
+└── package.json
 ```
 
----
+## ▶️ Como rodar
 
-## ▶️ Como executar o projeto
-
-### 1. Instale as dependências
+Use **Node.js 20 ou 22 (LTS)**. Em versões muito novas do Node o download do Electron pode falhar no `npm install`.
 
 ```bash
 npm install
 ```
 
-### 2. Inicie o aplicativo
-
 ```bash
 npm start
 ```
 
----
+As ações marcadas como **Administrador** só funcionam com o app aberto como administrador. O instalador gerado já pede isso automaticamente.
+
+## 📦 Gerar o instalador
+
+```bash
+npm run build
+```
+
+O instalador `.exe` fica em `dist/`.
+
+## ➕ Adicionar uma otimização
+
+1. Crie o script em `scripts/` (por exemplo `minhaacao.reg`) e, se possível, o de reversão (`restore_minhaacao.reg`).
+2. Adicione uma linha em `optimizations.js`:
+   ```js
+   ['minhaacao', 'Título', 'O que faz, de forma honesta.', 'fps', 'moderate', 'Grupo', 'minhaacao.reg', 'restore_minhaacao.reg'],
+   ```
+3. Se mexer em `HKLM`, `bcdedit`, `netsh` ou `powercfg`, inclua o id em `adminActions`.
 
 ## ⚠️ Aviso
 
-Este aplicativo realiza alterações no sistema operacional por meio de scripts.
-
-**Recomendações:**
-- Execute o app como **Administrador**
-- Crie um **ponto de restauração** antes de aplicar otimizações
-- Revise os scripts antes de usar em máquina principal
-
----
-
-## 💡 Objetivo do projeto
-
-O objetivo do **KKJOpti** é centralizar otimizações úteis em um único aplicativo, com foco em:
-
-- desempenho
-- praticidade
-- interface amigável
-- aplicação rápida de tweaks no Windows
-
----
-
-## 🚧 Melhorias futuras
-
-- Sistema de feedback dentro do app
-- Mais páginas de otimização
-- Organização por categorias
-- Exportação de logs
-- Sistema de chave/licença
-- Atualizador automático
-
----
+O app altera configurações do Windows. Os ganhos variam conforme o hardware. Crie um ponto de restauração antes de usar ações **avançadas** e teste scripts novos numa máquina virtual.
 
 ## 👨‍💻 Autor
 
-Desenvolvido por **Kaio**  
-Projeto: **KKJOpti**
-
----
-
-## 📌 Observação
-
-Este projeto é voltado para estudo, testes e uso prático de otimizações no Windows através de uma interface desktop personalizada.
+Desenvolvido por **Kaio**. Licença MIT.

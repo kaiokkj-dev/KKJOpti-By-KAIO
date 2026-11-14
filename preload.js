@@ -1,16 +1,14 @@
 const { contextBridge, ipcRenderer } = require('electron');
-
-window.addEventListener('DOMContentLoaded', () => {
-  console.log('KKJOpti iniciado com Electron');
-});
-
-contextBridge.exposeInMainWorld('electronAPI', {
-  executarLote: (tipos) => ipcRenderer.send('executar-lote', tipos),
-  instalarProgramas: (tipos) => ipcRenderer.send('instalar-programas', tipos),
-  abrirLog: () => ipcRenderer.send('abrir-log'),
-  onStatus: (callback) => ipcRenderer.on('status', (_, msg) => callback(msg))
-});
-
-contextBridge.exposeInMainWorld('api', {
-  abrirLink: (url) => ipcRenderer.send('abrir-link', url)
+contextBridge.exposeInMainWorld('kkj', {
+  getCatalog: () => ipcRenderer.invoke('catalog:list'),
+  getDetails: (id) => ipcRenderer.invoke('catalog:details', id),
+  getSystemInfo: () => ipcRenderer.invoke('system:info'),
+  getSystemStats: () => ipcRenderer.invoke('system:stats'),
+  apply: (ids) => ipcRenderer.invoke('run:apply', ids),
+  restore: (ids) => ipcRenderer.invoke('run:restore', ids),
+  openLog: () => ipcRenderer.invoke('log:open'),
+  getHistory: () => ipcRenderer.invoke('history:list'),
+  restoreSnapshot: (runId, itemId) => ipcRenderer.invoke('history:restore-snapshot', runId, itemId),
+  openWebsite: () => ipcRenderer.invoke('external:open', 'https://kaiohenrique.dev/'),
+  onProgress: (callback) => { const listener = (_event, payload) => callback(payload); ipcRenderer.on('run:progress', listener); return () => ipcRenderer.removeListener('run:progress', listener); }
 });

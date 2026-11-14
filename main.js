@@ -1,314 +1,297 @@
-const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const { spawn } = require('child_process');
-const path = require('path');
 const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const catalog = require('./optimizations');
 
-let logPath = null;
+let mainWindow;
+let logPath;
+let historyPath;
+let backupsPath;
+let running = false;
+let previousCpuSample = null;
 
-function log(mensagem) {
+function writeLog(message) {
+  if (!logPath) return;
+  fs.mkdirSync(path.dirname(logPath), { recursive: true });
+  fs.appendFileSync(logPath, `[${new Date().toISOString()}] ${message}\n`, 'utf8');
+}
+
+function readHistory() {
   try {
-    if (!logPath) return;
-
-    const pasta = path.dirname(logPath);
-    if (!fs.existsSync(pasta)) {
-      fs.mkdirSync(pasta, { recursive: true });
-    }
-
-    const texto = `[${new Date().toLocaleString()}] ${mensagem}\n`;
-    fs.appendFileSync(logPath, texto, 'utf8');
+    if (!historyPath || !fs.existsSync(historyPath)) return [];
+    const value = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
+    return Array.isArray(value) ? value.slice(0, 30) : [];
   } catch (error) {
-    console.error('Erro ao escrever no log:', error.message);
+    writeLog(`Falha ao ler histórico: ${error.message}`);
+    return [];
   }
 }
 
-function mostrarErroCritico(titulo, erro) {
-  const mensagem = erro?.stack || erro?.message || String(erro);
-  console.error(titulo, mensagem);
-  log(`${titulo}: ${mensagem}`);
-
-  try {
-    dialog.showErrorBox(titulo, mensagem);
-  } catch {}
+function saveRun(mode, summary, runId) {
+  if (!historyPath) return;
+  const entry = { id: runId, date: new Date().toISOString(), mode, success: summary.success, failed: summary.failed, results: summary.results.map(({ id, title, ok, error, backupFiles }) => ({ id, title, ok, error: error || '', backupFiles: backupFiles || [] })) };
+  const history = [entry, ...readHistory()].slice(0, 30);
+  fs.mkdirSync(path.dirname(historyPath), { recursive: true });
+  fs.writeFileSync(historyPath, JSON.stringify(history, null, 2), 'utf8');
 }
 
-process.on('uncaughtException', (err) => {
-  mostrarErroCritico('Erro não tratado', err);
-});
+async function backupRegistry(item, target, runId) {
+  if (!backupsPath) return [];
+  const text = fs.readFileSync(target, 'utf8');
+  const keys = [...text.matchAll(/^\[([^\]-][^\]]*)\]$/gm)].map((match) => match[1]);
+  const folder = path.join(backupsPath, runId, item.id);
+  fs.mkdirSync(folder, { recursive: true });
+  const files = [];
+  for (let index = 0; index < keys.length; index += 1) {
+    const file = path.join(folder, `${index + 1}.reg`);
+    const result = await runProcess('reg.exe', ['export', keys[index], file, '/y']);
+    if (result.ok && fs.existsSync(file)) files.push(file);
+  }
+  return files;
+}
 
-process.on('unhandledRejection', (err) => {
-  mostrarErroCritico('Promise rejeitada', err);
-});
+function resourcePath(item, mode = 'apply') {
+  const file = mode === 'restore' ? item.restoreFile : item.file;
+  if (!file) return null;
+  const root = app.isPackaged ? process.resourcesPath : __dirname;
+  return path.join(root, 'scripts', file);
+}
+
+function publicItem(item) {
+  const applyPath = resourcePath(item);
+  const restorePath = resourcePath(item, 'restore');
+  return { ...item, available: item.kind === 'system' || Boolean(applyPath && fs.existsSync(applyPath)), restorable: Boolean(restorePath && fs.existsSync(restorePath)) };
+}
+
+function sendProgress(payload) {
+  if (mainWindow && !mainWindow.isDestroyed()) mainWindow.webContents.send('run:progress', payload);
+}
+
+// Tempo máximo de cada ação. Evita que um script travado (ex.: uma janela
+// esperando clique) deixe a fila presa para sempre em "running".
+const PROCESS_TIMEOUT_MS = 5 * 60 * 1000;
+
+function runProcess(command, args = [], options = {}) {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, { shell: false, windowsHide: true, ...options });
+    let stderr = '';
+    let timedOut = false;
+    const timer = setTimeout(() => {
+      timedOut = true;
+      // /T encerra também os processos filhos (o cmd.exe sozinho deixaria os filhos rodando).
+      spawn('taskkill.exe', ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true });
+    }, PROCESS_TIMEOUT_MS);
+    child.stderr?.on('data', (data) => { stderr += data.toString(); });
+    child.on('error', (error) => { clearTimeout(timer); resolve({ ok: false, code: -1, error: error.message }); });
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      if (timedOut) resolve({ ok: false, code, error: `Tempo limite de ${PROCESS_TIMEOUT_MS / 60000} minutos excedido.` });
+      else resolve({ ok: code === 0, code, error: stderr.trim() });
+    });
+  });
+}
+
+function captureProcess(command, args = []) {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, { shell: false, windowsHide: true });
+    let stdout = '';
+    child.stdout?.on('data', (data) => { stdout += data.toString(); });
+    child.once('error', () => resolve(''));
+    child.once('close', () => resolve(stdout.trim()));
+  });
+}
+
+function cpuStats() {
+  const current = os.cpus().reduce((sum, cpu) => {
+    const total = Object.values(cpu.times).reduce((value, time) => value + time, 0);
+    return { idle: sum.idle + cpu.times.idle, total: sum.total + total };
+  }, { idle: 0, total: 0 });
+  let usage = 0;
+  if (previousCpuSample) {
+    const idle = current.idle - previousCpuSample.idle;
+    const total = current.total - previousCpuSample.total;
+    usage = total > 0 ? Math.round((1 - idle / total) * 100) : 0;
+  }
+  previousCpuSample = current;
+  return Math.max(0, Math.min(100, usage));
+}
+
+function liveStats() {
+  const totalMemory = os.totalmem();
+  const usedMemory = totalMemory - os.freemem();
+  let disk = null;
+  try {
+    const drive = process.env.SystemDrive || 'C:';
+    const values = fs.statfsSync(`${drive}\\`);
+    disk = { freeGb: Math.round(values.bavail * values.bsize / 1024 ** 3), totalGb: Math.round(values.blocks * values.bsize / 1024 ** 3) };
+  } catch {}
+  return { cpuUsage: cpuStats(), memoryUsage: Math.round(usedMemory / totalMemory * 100), freeMemoryGb: Math.round(os.freemem() / 1024 ** 3 * 10) / 10, uptimeHours: Math.round(os.uptime() / 360) / 10, disk };
+}
+
+async function systemInfo() {
+  const gpuCommand = "Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name | Select-Object -First 1";
+  const gpu = await captureProcess('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', gpuCommand]);
+  return { cpu: os.cpus()[0]?.model?.trim() || 'Não identificado', cores: os.cpus().length, memoryGb: Math.round(os.totalmem() / 1024 ** 3), platform: os.platform(), release: os.release(), hostname: os.hostname(), architecture: os.arch(), gpu: gpu || 'Não identificada', ...liveStats() };
+}
+
+function launchProcess(command, args = []) {
+  return new Promise((resolve) => {
+    const child = spawn(command, args, { shell: false, windowsHide: false, detached: true, stdio: 'ignore' });
+    let settled = false;
+    child.once('error', (error) => {
+      if (settled) return;
+      settled = true;
+      resolve({ ok: false, code: -1, error: error.message });
+    });
+    child.once('spawn', () => {
+      if (settled) return;
+      settled = true;
+      child.unref();
+      resolve({ ok: true, code: 0, launched: true });
+    });
+  });
+}
+
+function runBatch(target) {
+  return runProcess('cmd.exe', ['/d', '/s', '/c', `""${target}""`], { windowsVerbatimArguments: true });
+}
+
+async function executeItem(item, mode, runId) {
+  if (item.kind === 'system' && item.id === 'limpardisco') return launchProcess('cleanmgr.exe');
+  const systemTools = {
+    storage_sense: { uri: 'ms-settings:storagesense' },
+    startup_apps: { uri: 'ms-settings:startupapps' },
+    installed_apps: { uri: 'ms-settings:appsfeatures' },
+    windows_security: { uri: 'windowsdefender:' },
+    task_manager: { command: 'taskmgr.exe' },
+    resource_monitor: { command: 'resmon.exe' },
+    system_protection: { command: 'SystemPropertiesProtection.exe' },
+    dxdiag: { command: 'dxdiag.exe' },
+    power_options: { command: 'control.exe', args: ['/name', 'Microsoft.PowerOptions'] }
+  };
+  if (item.kind === 'system' && systemTools[item.id]) {
+    const tool = systemTools[item.id];
+    if (tool.uri) {
+      try { await shell.openExternal(tool.uri); return { ok: true, code: 0, launched: true }; }
+      catch (error) { return { ok: false, code: -1, error: error.message }; }
+    }
+    return launchProcess(tool.command, tool.args || []);
+  }
+  if (item.kind === 'system' && item.id === 'restorepoint') {
+    const command = "Checkpoint-Computer -Description 'KKJOpti' -RestorePointType 'MODIFY_SETTINGS' -ErrorAction Stop";
+    return runProcess('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
+  }
+  const target = resourcePath(item, mode);
+  if (!target || !fs.existsSync(target)) return { ok: false, code: -1, error: `Arquivo não encontrado: ${path.basename(target || 'não configurado')}` };
+  const extension = path.extname(target).toLowerCase();
+  const backupFiles = mode === 'apply' && extension === '.reg' ? await backupRegistry(item, target, runId) : [];
+  if (extension === '.reg') return { ...await runProcess('reg.exe', ['import', target]), backupFiles };
+  if (extension === '.bat' || extension === '.cmd') return runBatch(target);
+  if (extension === '.exe') return launchProcess(target);
+  return { ok: false, code: -1, error: 'Tipo de arquivo não permitido.' };
+}
+
+async function runQueue(ids, mode = 'apply') {
+  if (running) return { ok: false, reason: 'Já existe uma operação em andamento.' };
+  const items = [...new Set(Array.isArray(ids) ? ids : [])].slice(0, 50).map((id) => catalog.find((entry) => entry.id === id)).filter(Boolean);
+  if (!items.length) return { ok: false, reason: 'Nenhuma ação válida foi selecionada.' };
+  running = true;
+  const runId = `${Date.now()}`;
+  const results = [];
+  try {
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index];
+      sendProgress({ phase: 'running', id: item.id, index: index + 1, total: items.length, label: item.title, mode });
+      writeLog(`${mode.toUpperCase()} ${item.id} iniciado`);
+      const result = await executeItem(item, mode, runId);
+      results.push({ id: item.id, title: item.title, ...result });
+      writeLog(`${mode.toUpperCase()} ${item.id} ${result.ok ? 'sucesso' : `falha: ${result.error || result.code}`}`);
+      sendProgress({ phase: result.ok ? 'success' : 'error', id: item.id, result });
+    }
+  } finally { running = false; }
+  const success = results.filter((result) => result.ok).length;
+  const summary = { ok: success === results.length, success, failed: results.length - success, results };
+  saveRun(mode, summary, runId);
+  sendProgress({ phase: 'complete', ...summary });
+  return summary;
+}
 
 function createWindow() {
-  const win = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    minWidth: 1100,
-    minHeight: 700,
-    autoHideMenuBar: true,
-    backgroundColor: '#050816',
+  mainWindow = new BrowserWindow({
+    width: 1440, height: 920, minWidth: 980, minHeight: 680, autoHideMenuBar: true, backgroundColor: '#050907',
     icon: path.join(__dirname, 'assets', 'kkjopti_icon.ico'),
-    webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
-      contextIsolation: true,
-      nodeIntegration: false
-    }
+    webPreferences: { preload: path.join(__dirname, 'preload.js'), contextIsolation: true, nodeIntegration: false, sandbox: true }
   });
-
-  win.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
-    log(`Falha ao carregar janela: ${errorCode} - ${errorDescription}`);
-  });
-
-  win.loadFile('index.html')
-    .then(() => {
-      console.log('index.html carregado com sucesso');
-      log('index.html carregado com sucesso');
-    })
-    .catch((err) => {
-      mostrarErroCritico('Erro ao carregar index.html', err);
-    });
+  mainWindow.loadFile('index.html');
+  mainWindow.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
 }
 
-function getScriptPath(nomeArquivo) {
-  if (app.isPackaged) {
-    return path.join(process.resourcesPath, 'scripts', nomeArquivo);
+ipcMain.handle('catalog:list', () => catalog.map(publicItem));
+ipcMain.handle('catalog:details', (_event, id) => {
+  const item = catalog.find((entry) => entry.id === id);
+  if (!item) return null;
+  const target = resourcePath(item);
+  let preview = item.kind === 'system' ? 'Ferramenta integrada do Windows.' : `Arquivo: ${item.file}`;
+  if (target && fs.existsSync(target) && ['.bat', '.cmd', '.reg'].includes(path.extname(target).toLowerCase())) {
+    const lines = fs.readFileSync(target, 'utf8').split(/\r?\n/)
+      .map((line) => line.replace(/\s*\|\|\s*set "FALHA=1"$/i, '').trim())
+      .filter((line) => line && !/^(@echo|echo |::|;|rem |setlocal|set "FALHA|Windows Registry Editor|exit)/i.test(line));
+    preview = lines.slice(0, 18).join('\n') || `Arquivo: ${item.file}`;
   }
-  return path.join(__dirname, 'scripts', nomeArquivo);
-}
-
-function validarArquivo(arquivo, event, tipoLabel) {
-  if (!fs.existsSync(arquivo)) {
-    const msg = `${tipoLabel} não encontrado: ${arquivo}`;
-    console.error(msg);
-    log(msg);
-    if (event?.sender) {
-      event.sender.send('status', `Erro: arquivo não encontrado (${path.basename(arquivo)})`);
-    }
-    return false;
+  return { ...publicItem(item), preview: preview.slice(0, 5000) };
+});
+ipcMain.handle('system:info', () => systemInfo());
+ipcMain.handle('system:stats', () => liveStats());
+ipcMain.handle('run:apply', (_event, ids) => runQueue(ids, 'apply'));
+ipcMain.handle('run:restore', (_event, ids) => runQueue(ids, 'restore'));
+ipcMain.handle('log:open', async () => {
+  if (!logPath || !fs.existsSync(logPath)) return { ok: false, reason: 'O log ainda está vazio.' };
+  const error = await shell.openPath(logPath);
+  return { ok: !error, reason: error };
+});
+ipcMain.handle('history:list', () => readHistory());
+ipcMain.handle('history:restore-snapshot', async (_event, runId, itemId) => {
+  if (running) return { ok: false, reason: 'Já existe uma operação em andamento.' };
+  const run = readHistory().find((entry) => entry.id === runId);
+  const result = run?.results.find((entry) => entry.id === itemId);
+  if (!result?.backupFiles?.length) return { ok: false, reason: 'Esta ação não possui snapshot disponível.' };
+  const root = path.resolve(backupsPath);
+  for (const file of result.backupFiles) {
+    const resolved = path.resolve(file);
+    if (!resolved.startsWith(`${root}${path.sep}`) || !fs.existsSync(resolved)) return { ok: false, reason: 'Snapshot inválido ou removido.' };
+    const restored = await runProcess('reg.exe', ['import', resolved]);
+    if (!restored.ok) return { ok: false, reason: restored.error || 'Não foi possível restaurar o registro.' };
   }
-  return true;
-}
-
-function executarProcesso(comando, args, event, nomeExibicao, mensagem, options = {}) {
-  if (mensagem) {
-    event.sender.send('status', mensagem);
-    log(`Status enviado: ${mensagem}`);
-  }
-
-  log(`Executando: ${comando} ${args.join(' ')}`);
-
-  const processo = spawn(comando, args, {
-    shell: true,
-    windowsHide: options.windowsHide ?? true
-  });
-
-  processo.on('error', (error) => {
-    console.error(`Erro ao executar ${nomeExibicao}:`, error.message);
-    log(`Erro ao executar ${nomeExibicao}: ${error.stack || error.message}`);
-    event.sender.send('status', `Erro ao executar ${nomeExibicao}`);
-  });
-
-  processo.on('close', (code) => {
-    console.log(`${nomeExibicao} finalizado com código ${code}`);
-    log(`${nomeExibicao} finalizado com código ${code}`);
-
-    if (code !== 0) {
-      event.sender.send('status', `Erro ao executar ${nomeExibicao} (código ${code})`);
-    }
-  });
-
-  return processo;
-}
-
-function executarBat(nomeArquivo, event, mensagem) {
-  const arquivo = getScriptPath(nomeArquivo);
-  if (!validarArquivo(arquivo, event, 'BAT')) return;
-
-  log(`Iniciando BAT: ${nomeArquivo}`);
-  log(`Caminho BAT: ${arquivo}`);
-
-  executarProcesso(arquivo, [], event, nomeArquivo, mensagem, {
-    windowsHide: true
-  });
-}
-
-function executarReg(nomeArquivo, event, mensagem) {
-  const arquivo = getScriptPath(nomeArquivo);
-  if (!validarArquivo(arquivo, event, 'REG')) return;
-
-  log(`Iniciando REG: ${nomeArquivo}`);
-  log(`Caminho REG: ${arquivo}`);
-
-  executarProcesso('reg', ['import', arquivo], event, nomeArquivo, mensagem, {
-    windowsHide: true
-  });
-}
-
-function executarArquivo(nomeArquivo, event, mensagem) {
-  const arquivo = getScriptPath(nomeArquivo);
-  if (!validarArquivo(arquivo, event, 'Arquivo')) return;
-
-  log(`Iniciando arquivo: ${nomeArquivo}`);
-  log(`Caminho arquivo: ${arquivo}`);
-
-  executarProcesso(arquivo, [], event, nomeArquivo, mensagem, {
-    windowsHide: false
-  });
-}
-
-ipcMain.on('executar-lote', (event, tipos) => {
-  if (!Array.isArray(tipos)) {
-    log('Executar lote recebido inválido');
-    return;
-  }
-
-  log(`Executar lote recebido: ${JSON.stringify(tipos)}`);
-
-  tipos.forEach((tipo) => {
-    if (tipo === 'limpeza') executarBat('limpeza.bat', event, 'Limpando arquivos temporários...');
-    if (tipo === 'cache') executarBat('cache.bat', event, 'Limpando cache...');
-    if (tipo === 'cleanwindows') executarBat('cleanwindows.bat', event, 'Limpando sistema...');
-    if (tipo === 'flushdns') executarBat('flushdns.bat', event, 'Atualizando DNS...');
-    if (tipo === 'networkboost') executarBat('networkboost.bat', event, 'Otimizando rede...');
-    if (tipo === 'startup') executarBat('startup.bat', event, 'Otimizando inicialização...');
-    if (tipo === 'cpu') executarBat('cpu.bat', event, 'Otimizando uso de CPU...');
-    if (tipo === 'decreaseload') executarBat('decreaseload.bat', event, 'Ativando modo desempenho...');
-
-    if (tipo === 'telemetria') executarReg('telemetria.reg', event, 'Desativando telemetria...');
-    if (tipo === 'responsiveness') executarReg('responsiveness.reg', event, 'Ajustando responsividade...');
-    if (tipo === 'inputdelay') executarReg('inputdelay.reg', event, 'Reduzindo input delay...');
-    if (tipo === 'processorscheduling') executarReg('processorscheduling.reg', event, 'Ajustando prioridade do processador...');
-
-    if (tipo === 'fpsboost') executarBat('fpsboost.bat', event, 'Aplicando FPS Boost...');
-    if (tipo === 'gameboost') executarBat('gameboost.bat', event, 'Ativando Game Boost Mode...');
-    if (tipo === 'disablegamedvr') executarReg('disablegamedvr.reg', event, 'Desativando Game DVR...');
-    if (tipo === 'fullscreenoff') executarReg('fullscreenoff.reg', event, 'Desativando otimização de tela cheia...');
-    if (tipo === 'timerresolution') executarBat('timerresolution.bat', event, 'Aplicando Timer Resolution Boost...');
-    if (tipo === 'cpupriority') executarBat('cpupriority.bat', event, 'Aumentando prioridade da CPU...');
-    if (tipo === 'coreparking') executarReg('coreparking.reg', event, 'Desativando Core Parking...');
-    if (tipo === 'memoryopt') executarBat('memoryopt.bat', event, 'Otimizando memória RAM...');
-    if (tipo === 'memorycompression') executarBat('memorycompression.bat', event, 'Desativando compressão de memória...');
-    if (tipo === 'cacheboost') executarBat('cacheboost.bat', event, 'Aplicando Cache Boost...');
-    if (tipo === 'tcpopt') executarBat('tcpopt.bat', event, 'Otimizando TCP...');
-    if (tipo === 'networkthrottling') executarReg('networkthrottling.reg', event, 'Desativando Network Throttling...');
-    if (tipo === 'mousefix') executarReg('mousefix.reg', event, 'Aplicando Mouse Fix...');
-    if (tipo === 'keyboardboost') executarReg('keyboardboost.reg', event, 'Aplicando Keyboard Response Boost...');
-    if (tipo === 'trackingoff') executarReg('trackingoff.reg', event, 'Desativando rastreamento...');
-    if (tipo === 'cortanaoff') executarReg('cortanaoff.reg', event, 'Desativando Cortana...');
-    if (tipo === 'animationsoff') executarReg('animationsoff.reg', event, 'Desativando animações...');
-    if (tipo === 'explorerspeed') executarReg('explorerspeed.reg', event, 'Otimizando Explorer...');
-    if (tipo === 'fastshutdown') executarReg('fastshutdown.reg', event, 'Aplicando desligamento rápido...');
-    if (tipo === 'notificationsoff') executarReg('notificationsoff.reg', event, 'Desativando notificações...');
-
-    if (tipo === 'nvidia_thread_priority') executarReg('nvidia_thread_priority.reg', event, 'Aplicando prioridade NVIDIA...');
-    if (tipo === 'revert_nvidia') executarReg('revert_nvidia.reg', event, 'Revertendo configurações NVIDIA...');
-    if (tipo === 'amd_thread_priority') executarReg('amd_thread_priority.reg', event, 'Aplicando prioridade AMD...');
-    if (tipo === 'revert_amd') executarReg('revert_amd.reg', event, 'Revertendo configurações AMD...');
-
-    if (tipo === 'networklimitoff') executarReg('networklimitoff.reg', event, 'Desativando limitação de rede...');
-    if (tipo === 'netspeedboost') executarBat('netspeedboost.bat', event, 'Aplicando Net Speed Boost...');
-    if (tipo === 'internetcmd') executarBat('internetcmd.bat', event, 'Executando otimização de internet...');
-    if (tipo === 'pingboost') executarBat('pingboost.bat', event, 'Aplicando Ping Boost...');
-    if (tipo === 'networkpriority') executarReg('networkpriority.reg', event, 'Aplicando prioridade de rede...');
-    if (tipo === 'dnsboost') executarBat('dnsboost.bat', event, 'Aplicando DNS Boost...');
-
-    if (tipo === 'ram2gb') executarReg('ram2gb.reg', event, 'Aplicando perfil para 2GB de RAM...');
-    if (tipo === 'ram4gb') executarReg('ram4gb.reg', event, 'Aplicando perfil para 4GB de RAM...');
-    if (tipo === 'ram6gb') executarReg('ram6gb.reg', event, 'Aplicando perfil para 6GB de RAM...');
-    if (tipo === 'ram8gb') executarReg('ram8gb.reg', event, 'Aplicando perfil para 8GB de RAM...');
-    if (tipo === 'ram12gb') executarReg('ram12gb.reg', event, 'Aplicando perfil para 12GB de RAM...');
-    if (tipo === 'ram16gb') executarReg('ram16gb.reg', event, 'Aplicando perfil para 16GB de RAM...');
-    if (tipo === 'ram24gb') executarReg('ram24gb.reg', event, 'Aplicando perfil para 24GB de RAM...');
-    if (tipo === 'ram32gb') executarReg('ram32gb.reg', event, 'Aplicando perfil para 32GB de RAM...');
-  });
-
-  setTimeout(() => {
-    event.sender.send('status', '✔ Otimização concluída');
-    log('✔ Otimização concluída');
-  }, 1500);
+  writeLog(`SNAPSHOT ${runId}/${itemId} restaurado`);
+  return { ok: true };
+});
+ipcMain.handle('external:open', async (_event, value) => {
+  if (value !== 'https://kaiohenrique.dev/') return { ok: false, reason: 'Link não permitido.' };
+  await shell.openExternal(value); return { ok: true };
 });
 
-ipcMain.on('instalar-programas', (event, tipos) => {
-  if (!Array.isArray(tipos)) {
-    log('Instalar programas recebido inválido');
-    return;
-  }
+const sessionPath = path.join(app.getPath('userData'), 'Session');
+fs.mkdirSync(sessionPath, { recursive: true });
+app.setPath('sessionData', sessionPath);
 
-  log(`Instalar programas recebido: ${JSON.stringify(tipos)}`);
-
-  tipos.forEach((tipo) => {
-    if (tipo === '10appsmanager') {
-      executarArquivo('10AppsManager.exe', event, 'Abrindo 10AppsManager...');
-    }
-
-    if (tipo === 'bleachbit') {
-      executarArquivo('BleachBit-5.0.2-setup.exe', event, 'Abrindo instalador do BleachBit...');
-    }
-
-    if (tipo === 'limpardisco') {
-      event.sender.send('status', 'Abrindo Limpeza de Disco...');
-      log('Abrindo cleanmgr.exe');
-
-      executarProcesso('cleanmgr.exe', [], event, 'cleanmgr.exe', 'Abrindo Limpeza de Disco...', {
-        windowsHide: false
-      });
-    }
-
-    if (tipo === 'limpezawindows') {
-      executarBat('limpeza_windows.bat', event, 'Executando Limpeza Windows...');
-    }
-
-    if (tipo === 'otimizadormemoria') {
-      executarBat('otimizador_memoria.bat', event, 'Executando Otimizador de Memória...');
-    }
-
-    if (tipo === 'adwcleaner') {
-      executarArquivo('adwcleaner.exe', event, 'Abrindo AdwCleaner...');
-    }
-  });
-
-  setTimeout(() => {
-    event.sender.send('status', '✔ Programas processados');
-    log('✔ Programas processados');
-  }, 1500);
-});
-
-ipcMain.on('abrir-log', async () => {
-  try {
-    if (logPath && fs.existsSync(logPath)) {
-      await shell.openPath(logPath);
-    }
-  } catch (error) {
-    console.error('Erro ao abrir log:', error.message);
-    log(`Erro ao abrir log: ${error.message}`);
-  }
-});
-
-ipcMain.on('abrir-link', (_event, url) => {
-  shell.openExternal(url);
+const hasSingleInstanceLock = app.requestSingleInstanceLock();
+if (!hasSingleInstanceLock) app.quit();
+app.on('second-instance', () => {
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
 });
 
 app.whenReady().then(() => {
+  if (!hasSingleInstanceLock) return;
   logPath = path.join(app.getPath('userData'), 'logs', 'KKJOpti-log.txt');
-  log('App iniciado com sucesso');
-  log(`Arquivo de log: ${logPath}`);
-  log(`app.isPackaged = ${app.isPackaged}`);
-  log(`process.resourcesPath = ${process.resourcesPath}`);
-  log(`__dirname = ${__dirname}`);
-
-  createWindow();
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      log('Nova janela criada');
-      createWindow();
-    }
-  });
+  historyPath = path.join(app.getPath('userData'), 'logs', 'history.json');
+  backupsPath = path.join(app.getPath('userData'), 'backups');
+  writeLog('Aplicativo iniciado'); createWindow();
+  app.on('activate', () => BrowserWindow.getAllWindows().length === 0 && createWindow());
 });
-
-app.on('window-all-closed', () => {
-  log('App fechado');
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
+app.on('window-all-closed', () => process.platform !== 'darwin' && app.quit());
+process.on('uncaughtException', (error) => writeLog(`Erro não tratado: ${error.stack || error.message}`));
+process.on('unhandledRejection', (error) => writeLog(`Rejeição não tratada: ${error?.stack || error}`));

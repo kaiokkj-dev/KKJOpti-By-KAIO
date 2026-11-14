@@ -1,300 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KKJOpti by Kaio</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'">
+  <title>KKJOpti</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="app">
+  <div class="app-shell">
     <aside class="sidebar">
-      <div class="logo">
-        <img src="assets/kkjopti_logo_bigger.png" class="logo-img">
-        <div class="logo-divider">
-          <span class="logo-subtitle">PAINEL DE OTIMIZAÇÃO</span>
-        </div>
-      </div>
-      <nav class="menu">
-        <button class="menu-item active"><i data-lucide="rocket"></i>OTIMIZAR</button>
-        <button class="menu-item" onclick="window.location.href='fps.html'">
-          <i data-lucide="zap"></i>FPS BOOST<span class="dot"></span>
-        </button>
-        <button class="menu-item" onclick="window.location.href='internet.html'">
-          <i data-lucide="wifi"></i>INTERNET
-        </button>
-        <button class="menu-item" onclick="window.location.href='gpu.html'">
-          <i data-lucide="cpu"></i>PLACA DE VIDEO
-        </button>
-        <button class="menu-item" onclick="window.location.href='ram.html'">
-          <i data-lucide="memory-stick"></i>MEMORIA RAM
-        </button>
-        
-  <div class="sidebar-footer">
-    <button class="menu-item footer-btn" id="btnSobre">
-      <i data-lucide="message-circle"></i>
-      SOBRE
-    </button>
-  </div>
+      <div class="brand"><img src="assets/kkjopti_logo_bigger.png" alt="KKJOpti"><span>PAINEL DE OTIMIZAÇÃO</span></div>
+      <nav id="navigation" aria-label="Categorias">
+        <button class="nav-item active" data-category="all"><i data-lucide="layout-dashboard"></i><span>Visão geral</span></button>
+        <button class="nav-item" data-category="performance"><i data-lucide="gauge"></i><span>Performance</span></button>
+        <button class="nav-item" data-category="fps"><i data-lucide="gamepad-2"></i><span>Jogos e FPS</span></button>
+        <button class="nav-item" data-category="internet"><i data-lucide="wifi"></i><span>Internet</span></button>
+        <button class="nav-item" data-category="gpu"><i data-lucide="monitor-cog"></i><span>Placa de vídeo</span></button>
+        <button class="nav-item" data-category="ram"><i data-lucide="memory-stick"></i><span>Memória RAM</span></button>
+        <button class="nav-item" data-category="programs"><i data-lucide="wrench"></i><span>Ferramentas</span></button>
       </nav>
-    </aside>
-    <main class="main-content">
-      <header class="topbar">
-        <div>
-          <h2>Otimizar</h2>
-          <p>Selecione as otimizações e clique em aplicar</p>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <button class="btn-sweep outline" onclick="marcarTodos()">
-            <span>Marcar Todos</span>
-          </button>
-          <button class="btn-sweep" onclick="aplicarMarcados()">
-            <span>Aplicar</span>
-          </button>
-        </div>
-      </header>
-      <section class="tabs">
-        <button class="tab active">Performance</button>
-        <button class="tab" onclick="window.location.href='programas.html'">Programas</button>
-      </section>
-      <div class="main">
-        <section class="cards">
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="folder"></i></div>
-              <div class="card-info">
-                <h3>Limpar arquivos temporários</h3>
-                <p>Remove arquivos desnecessários do sistema</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="limpeza" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="database"></i></div>
-              <div class="card-info">
-                <h3>Limpeza de Cache</h3>
-                <p>Remove cache e melhora desempenho geral</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="cache" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="zap"></i></div>
-              <div class="card-info">
-                <h3>Clean Windows</h3>
-                <p>Rotina completa de limpeza do sistema</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="cleanwindows" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="refresh-cw"></i></div>
-              <div class="card-info">
-                <h3>Flush DNS</h3>
-                <p>Atualiza cache de rede e melhora conexão</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="flushdns" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="wifi"></i></div>
-              <div class="card-info">
-                <h3>Network Boost</h3>
-                <p>Melhora estabilidade e velocidade da rede</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="networkboost" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="eye-off"></i></div>
-              <div class="card-info">
-                <h3>Desativar telemetria</h3>
-                <p>Remove processos de rastreamento do sistema</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="telemetria" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="activity"></i></div>
-              <div class="card-info">
-                <h3>System Responsiveness</h3>
-                <p>Melhora resposta geral do Windows</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="responsiveness" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="rocket"></i></div>
-              <div class="card-info">
-                <h3>Otimizar inicialização</h3>
-                <p>Remove programas desnecessários do startup</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="startup" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="gamepad-2"></i></div>
-              <div class="card-info">
-                <h3>Input Delay Reduction</h3>
-                <p>Reduz atraso de resposta em jogos</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="inputdelay" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="cpu"></i></div>
-              <div class="card-info">
-                <h3>Processor Scheduling</h3>
-                <p>Prioriza programas ativos</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="processorscheduling" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="cpu"></i></div>
-              <div class="card-info">
-                <h3>Liberar uso de CPU</h3>
-                <p>Finaliza processos desnecessários</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="cpu" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="card">
-            <div class="card-left">
-              <div class="icon"><i data-lucide="zap"></i></div>
-              <div class="card-info">
-                <h3>Decrease Load</h3>
-                <p>Reduz carga do sistema para melhor desempenho</p>
-              </div>
-            </div>
-            <label class="switch">
-              <input type="checkbox" data-tipo="decreaseload" />
-              <span class="slider"></span>
-            </label>
-          </div>
-        </section>
-        <div id="popup-status" class="popup-status">
-  <div class="popup-box">
-    <h3 id="popup-title">Otimizando...</h3>
-    <p id="popup-text">Aguardando ação...</p>
-  </div>
-</div>
+      <div class="sidebar-footer">
+        <button id="show-history" class="nav-item"><i data-lucide="history"></i><span>Histórico</span></button>
+        <button id="open-site" class="nav-item"><i data-lucide="circle-help"></i><span>Sobre o projeto</span></button>
+        <small>KKJOpti 2.0 • by Kaio</small>
       </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div class="page-heading"><div class="live-indicator"><span></span> Monitoramento ativo</div><h1 id="page-title">Visão geral</h1><p id="page-subtitle">Diagnóstico e otimizações transparentes para o seu PC.</p></div>
+        <div class="top-actions"><button id="restore" class="button secondary" disabled>Restaurar</button><button id="apply" class="button primary" disabled><span id="apply-label" class="apply-label">Aplicar selecionadas</span><span id="selected-count">0</span></button></div>
+      </header>
+
+      <section class="system-grid" aria-label="Informações do computador">
+        <article class="system-card accent"><span class="system-icon"><i data-lucide="shield-check"></i></span><div><small>STATUS</small><strong id="system-status">Analisando…</strong><p id="availability">Verificando recursos</p></div></article>
+        <article class="system-card"><span class="system-icon"><i data-lucide="cpu"></i></span><div><small>PROCESSADOR</small><strong id="cpu">Carregando…</strong><p id="cores">—</p><div class="meter"><span id="cpu-meter"></span></div></div></article>
+        <article class="system-card"><span class="system-icon"><i data-lucide="memory-stick"></i></span><div><small>MEMÓRIA</small><strong id="memory">—</strong><p id="memory-live">Memória física instalada</p><div class="meter"><span id="memory-meter"></span></div></div></article>
+        <article class="system-card"><span class="system-icon"><i data-lucide="monitor"></i></span><div><small>SISTEMA</small><strong id="windows">Windows</strong><p id="architecture">—</p></div></article>
+        <article class="system-card"><span class="system-icon"><i data-lucide="monitor-cog"></i></span><div><small>PLACA DE VÍDEO</small><strong id="gpu">Detectando…</strong><p>GPU principal</p></div></article>
+        <article class="system-card"><span class="system-icon"><i data-lucide="hard-drive"></i></span><div><small>ARMAZENAMENTO</small><strong id="disk">Detectando…</strong><p id="uptime">Tempo ligado: —</p></div></article>
+      </section>
+      <section id="recommendations" class="recommendations" aria-label="Recomendações do sistema"></section>
+
+      <section id="profiles-section" class="profiles" aria-label="Perfis rápidos">
+        <div class="section-heading"><div><p class="eyebrow">PERFIS RÁPIDOS</p><h2>Comece com uma seleção inteligente</h2></div><div class="profile-actions"><select id="saved-profiles" aria-label="Perfis personalizados"><option value="">Meus perfis…</option></select><button id="save-profile" class="text-button">Salvar seleção</button><button id="delete-profile" class="text-button danger-text" hidden>Excluir perfil</button><button id="clear" class="text-button">Limpar seleção</button></div></div>
+        <div class="profile-grid">
+          <button class="profile-card recommended" data-profile="recommended"><span><i data-lucide="sparkles"></i></span><div><strong>Recomendado</strong><p>Seleção adaptada à memória detectada.</p></div></button>
+          <button class="profile-card" data-profile="gaming"><span><i data-lucide="gamepad-2"></i></span><div><strong>Jogos</strong><p>Ajustes seguros e moderados para jogar.</p></div></button>
+          <button class="profile-card advanced-profile" data-profile="advanced"><span><i data-lucide="flame"></i></span><div><strong>Avançado</strong><p>Marca quase tudo que é compatível com este PC.</p></div></button>
+        </div>
+      </section>
+
+      <section class="catalog-section">
+        <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2 id="catalog-title">Todas as otimizações</h2></div><div class="filters"><label class="search"><i data-lucide="search"></i><input id="search" type="search" placeholder="Buscar otimização…"></label><select id="risk-filter" aria-label="Filtrar por risco"><option value="all">Todos os riscos</option><option value="safe">Seguro</option><option value="moderate">Moderado</option><option value="advanced">Avançado</option></select></div></div>
+        <div id="notice" class="notice"><strong>Scripts não encontrados</strong><span>As opções sem arquivo ficam bloqueadas. Adicione os scripts revisados à pasta <code>scripts/</code>.</span></div>
+        <div id="cards" class="cards" aria-live="polite"></div>
+        <p id="empty" class="empty" hidden>Nenhuma opção corresponde aos filtros.</p>
+      </section>
     </main>
   </div>
-<script>
-lucide.createIcons();
 
-const status = document.getElementById('status-app');
-const popup = document.getElementById('popup-status');
-const popupText = document.getElementById('popup-text');
-
-if (window.electronAPI) {
-  window.electronAPI.onStatus((msg) => {
-    if (status) status.textContent = msg;
-    if (popupText) popupText.textContent = msg;
-    if (popup) popup.classList.add('show');
-
-    if (msg.includes('concluída')) {
-      setTimeout(() => {
-        if (popup) popup.classList.remove('show');
-      }, 1200);
-    }
-  });
-} else {
-  console.error('electronAPI não foi carregada. Verifique o preload.js');
-}
-
-function marcarTodos() {
-  const checkboxes = document.querySelectorAll('.switch input[type="checkbox"]');
-  const botao = document.querySelector('.btn-sweep.outline span');
-  const todosMarcados = Array.from(checkboxes).every(cb => cb.checked);
-  if (todosMarcados) {
-    checkboxes.forEach(cb => cb.checked = false);
-    botao.textContent = 'Marcar Todos';
-  } else {
-    checkboxes.forEach(cb => cb.checked = true);
-    botao.textContent = 'Desmarcar';
-  }
-}
-
-function aplicarMarcados() {
-  const marcados = document.querySelectorAll('.switch input[type="checkbox"]:checked');
-  const tipos = [];
-
-  marcados.forEach((checkbox) => {
-    tipos.push(checkbox.getAttribute('data-tipo'));
-  });
-
-  if (tipos.length === 0) {
-    if (status) status.textContent = 'Nada selecionado.';
-    if (popupText) popupText.textContent = 'Nada selecionado.';
-    if (popup) popup.classList.add('show');
-
-    setTimeout(() => {
-      if (popup) popup.classList.remove('show');
-    }, 1200);
-    return;
-  }
-
-  if (status) status.textContent = 'Iniciando otimização...';
-  if (popupText) popupText.textContent = 'Iniciando otimização...';
-  if (popup) popup.classList.add('show');
-
-  if (window.electronAPI) {
-    window.electronAPI.executarLote(tipos);
-  } else {
-    console.error('electronAPI não disponível');
-  }
-}
-  document.getElementById('btnSobre').addEventListener('click', () => {
-    window.api.abrirLink('https://kaiohenrique.dev/');
-  });
-</script>
+  <div id="run-panel" class="run-panel" hidden>
+    <div class="run-head"><div><p class="eyebrow">EXECUÇÃO</p><h2 id="run-title">Preparando…</h2></div><button id="close-run" aria-label="Fechar">×</button></div>
+    <div class="progress-track"><span id="progress-bar"></span></div><p id="run-message">Aguardando…</p><div id="comparison" class="comparison" hidden></div><div id="results" class="results"></div>
+  </div>
+  <div id="toast" class="toast" role="status" hidden></div>
+  <dialog id="history-dialog" class="history-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">HISTÓRICO LOCAL</p><h2>Últimas execuções</h2></div><button id="close-history" aria-label="Fechar">×</button></div>
+    <div id="history-list" class="history-list"></div>
+    <div class="dialog-footer"><span>Os dados ficam somente neste computador.</span><button id="open-log" class="button secondary">Abrir arquivo de log</button></div>
+  </dialog>
+  <dialog id="review-dialog" class="history-dialog review-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">REVISÃO DE SEGURANÇA</p><h2>Confira antes de continuar</h2></div><button id="close-review" aria-label="Fechar">×</button></div>
+    <div class="review-summary"><div><strong id="review-count">0</strong><span>Ações</span></div><div><strong id="review-admin">0</strong><span>Administrador</span></div><div><strong id="review-restart">0</strong><span>Reinicializações</span></div></div>
+    <div id="review-list" class="review-list"></div>
+    <label id="auto-restore-row" class="auto-restore"><input id="auto-restore" type="checkbox" checked><span><strong>Criar ponto de restauração automaticamente</strong><small>Executado antes das alterações avançadas.</small></span></label>
+    <div class="dialog-footer"><span>Revise os riscos e aplique somente o que você entende.</span><button id="confirm-run" class="button primary">Confirmar e executar</button></div>
+  </dialog>
+  <dialog id="details-dialog" class="history-dialog details-dialog">
+    <div class="dialog-head"><div><p class="eyebrow">DETALHES DA AÇÃO</p><h2 id="details-title">Otimização</h2></div><button id="close-details" aria-label="Fechar">×</button></div>
+    <div class="details-body"><div id="details-badges" class="details-badges"></div><p id="details-description"></p><h3>O que será executado</h3><pre id="details-command"></pre><div class="details-warning"><i data-lucide="info"></i><span>Os resultados variam conforme o hardware e a versão do Windows. Use o ponto de restauração em alterações avançadas.</span></div></div>
+  </dialog>
+  <script src="node_modules/lucide/dist/umd/lucide.min.js"></script>
+  <script src="renderer.js"></script>
 </body>
 </html>

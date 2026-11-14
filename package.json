@@ -1,16 +1,23 @@
 {
   "name": "kkjopti",
-  "version": "1.0.0",
-  "description": "Aplicativo de otimização KKJOpti",
+  "version": "2.0.0",
+  "description": "Painel transparente e seguro de otimização para Windows",
   "author": "Kaio",
+  "license": "MIT",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder --win"
+  },
+  "dependencies": {
+    "lucide": "1.39.0"
   },
   "devDependencies": {
-    "electron": "^30.0.0",
-    "electron-builder": "^24.13.3"
+    "electron": "30.5.1",
+    "electron-builder": "24.13.3"
+  },
+  "allowScripts": {
+    "electron@30.5.1": true
   },
   "build": {
     "appId": "com.kaio.kkjopti",
@@ -18,16 +25,19 @@
     "files": [
       "main.js",
       "preload.js",
+      "renderer.js",
+      "optimizations.js",
       "index.html",
-      "fps.html",
-      "gpu.html",
-      "internet.html",
-      "ram.html",
-      "programas.html",
       "style.css",
       "assets/**/*",
-      "node_modules/**/*",
       "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "scripts",
+        "to": "scripts",
+        "filter": ["**/*.bat", "**/*.cmd", "**/*.reg"]
+      }
     ],
     "win": {
       "target": "nsis",
@@ -35,15 +45,10 @@
       "requestedExecutionLevel": "requireAdministrator"
     },
     "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
       "installerIcon": "assets/kkjopti_icon.ico",
-      "uninstallerIcon": "assets/kkjopti_icon.ico",
-      "installerHeaderIcon": "assets/kkjopti_icon.ico"
-    },
-    "extraResources": [
-      {
-        "from": "scripts",
-        "to": "scripts"
-      }
-    ]
+      "uninstallerIcon": "assets/kkjopti_icon.ico"
+    }
   }
 }
