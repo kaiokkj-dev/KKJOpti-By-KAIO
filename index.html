@@ -33,8 +33,14 @@
         <div class="top-actions"><button id="restore" class="button secondary" disabled>Restaurar</button><button id="apply" class="button primary" disabled><span id="apply-label" class="apply-label">Aplicar selecionadas</span><span id="selected-count">0</span></button></div>
       </header>
 
+      <div id="admin-banner" class="admin-banner" role="alert" hidden>
+        <i data-lucide="shield-alert"></i>
+        <div><strong>KKJOpti aberto sem administrador</strong><span id="admin-banner-text">Algumas ações estão bloqueadas.</span></div>
+        <button id="relaunch-admin" class="button primary">Reabrir como administrador</button>
+      </div>
+
       <section class="system-grid" aria-label="Informações do computador">
-        <article class="system-card accent"><span class="system-icon"><i data-lucide="shield-check"></i></span><div><small>STATUS</small><strong id="system-status">Analisando…</strong><p id="availability">Verificando recursos</p></div></article>
+        <article class="system-card accent"><span class="system-icon"><i data-lucide="shield-check"></i></span><div><small>STATUS</small><strong id="system-status">Analisando…</strong><p id="availability">Verificando recursos</p><p id="applied-count" class="applied-count">Lendo estado do Windows…</p></div></article>
         <article class="system-card"><span class="system-icon"><i data-lucide="cpu"></i></span><div><small>PROCESSADOR</small><strong id="cpu">Carregando…</strong><p id="cores">—</p><div class="meter"><span id="cpu-meter"></span></div></div></article>
         <article class="system-card"><span class="system-icon"><i data-lucide="memory-stick"></i></span><div><small>MEMÓRIA</small><strong id="memory">—</strong><p id="memory-live">Memória física instalada</p><div class="meter"><span id="memory-meter"></span></div></div></article>
         <article class="system-card"><span class="system-icon"><i data-lucide="monitor"></i></span><div><small>SISTEMA</small><strong id="windows">Windows</strong><p id="architecture">—</p></div></article>
@@ -75,6 +81,7 @@
     <div class="dialog-head"><div><p class="eyebrow">REVISÃO DE SEGURANÇA</p><h2>Confira antes de continuar</h2></div><button id="close-review" aria-label="Fechar">×</button></div>
     <div class="review-summary"><div><strong id="review-count">0</strong><span>Ações</span></div><div><strong id="review-admin">0</strong><span>Administrador</span></div><div><strong id="review-restart">0</strong><span>Reinicializações</span></div></div>
     <div id="review-list" class="review-list"></div>
+    <div id="review-conflicts" class="review-conflicts" hidden></div>
     <label id="auto-restore-row" class="auto-restore"><input id="auto-restore" type="checkbox" checked><span><strong>Criar ponto de restauração automaticamente</strong><small>Executado antes das alterações avançadas.</small></span></label>
     <div class="dialog-footer"><span>Revise os riscos e aplique somente o que você entende.</span><button id="confirm-run" class="button primary">Confirmar e executar</button></div>
   </dialog>

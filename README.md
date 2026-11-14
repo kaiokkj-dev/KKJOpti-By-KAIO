@@ -11,6 +11,12 @@ Painel desktop de **otimização para Windows** feito em Electron. Cada ação m
 - **Memória RAM:** perfil recomendado conforme a RAM detectada
 - **Ferramentas:** atalhos para ferramentas oficiais do Windows e "Reparar rede"
 
+### Inteligência
+
+- **"Já aplicado":** o app lê o registro, o plano de energia, o `bcdedit` e as configurações TCP e marca o que já está ativo no PC (somente leitura, em `system-state.js`)
+- **Administrador:** detecta se o app foi aberto sem administrador, bloqueia as ações que precisam disso e oferece **"Reabrir como administrador"**
+- **Conflitos:** ações que gravam o mesmo valor com dados diferentes (ex.: `SystemResponsiveness`) são avisadas na seleção e na revisão, e os perfis rápidos não escolhem ações que se anulam
+
 ### Segurança
 
 - Execução em **fila** (uma ação por vez), com **tempo limite** de 5 minutos por ação
@@ -27,6 +33,7 @@ KKJOpti-2.0/
 ├── scripts/           # .bat e .reg de cada ação + arquivos restore_*
 ├── optimizations.js   # Catálogo: título, risco, categoria, arquivo e reversão de cada ação
 ├── main.js            # Processo principal: fila, backups, histórico, IPC
+├── system-state.js    # Leitura do estado do Windows ("já aplicado") e conflitos
 ├── preload.js         # Ponte segura entre a interface e o main (window.kkj)
 ├── renderer.js        # Interface
 ├── index.html

@@ -52,3 +52,14 @@ main{padding:42px 50px 90px;max-width:1540px}.topbar{position:relative;margin-bo
 .run-panel{border-radius:11px;background:rgba(9,15,11,.98);border-color:rgba(100,157,119,.2);box-shadow:0 30px 90px rgba(0,0,0,.58)}.history-dialog{border-radius:11px;background:#090e0b;border-color:rgba(100,157,119,.2)}
 @media(max-width:1150px){main{padding:34px 30px 70px}.app-shell{grid-template-columns:230px 1fr}}
 @media(max-width:850px){.app-shell{grid-template-columns:76px 1fr}.sidebar{padding:24px 10px}.brand img{width:54px}main{padding:28px 22px 60px}}
+
+/* Aviso de administrador */
+.admin-banner{display:flex;align-items:center;gap:14px;margin:-10px 0 22px;padding:14px 16px;border:1px solid rgba(244,184,74,.32);border-radius:12px;background:linear-gradient(100deg,rgba(244,184,74,.1),rgba(244,184,74,.03))}.admin-banner>svg{flex:0 0 22px;width:22px;height:22px;color:var(--warning)}.admin-banner div{flex:1;min-width:0}.admin-banner strong,.admin-banner span{display:block}.admin-banner strong{color:var(--warning);font-size:13px}.admin-banner span{color:#d8c496;font-size:11px;margin-top:3px}.admin-banner .button{padding:10px 14px;font-size:12px;white-space:nowrap}
+.needs-admin{opacity:.55}.needs-admin .availability-badge{color:var(--warning)}
+/* Estado "já aplicado" */
+.applied .availability-badge{color:var(--green);font-weight:800}.optimization-card.applied:not(.selected){border-color:rgba(57,230,123,.22)}
+.system-card p.applied-count{color:var(--green);margin-top:2px}
+.applied-note{color:var(--green);font-weight:700}
+/* Conflitos na revisão */
+.review-conflicts{margin:0 21px 15px;padding:13px;border:1px solid rgba(255,107,107,.3);border-radius:10px;background:rgba(255,107,107,.06);font-size:11px;color:#e4b4b4}.review-conflicts strong{display:flex;align-items:center;gap:7px;color:#ff8c8c;font-size:12px}.review-conflicts strong svg{width:15px;height:15px}.review-conflicts ul{margin:8px 0;padding-left:18px;display:grid;gap:5px}.review-conflicts code{color:#ffd0d0}.review-conflicts>span{color:var(--muted);font-size:10px}
+@media(max-width:620px){.admin-banner{flex-wrap:wrap}.admin-banner .button{width:100%}}

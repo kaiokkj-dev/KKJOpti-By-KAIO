@@ -1,6 +1,9 @@
 const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('kkj', {
   getCatalog: () => ipcRenderer.invoke('catalog:list'),
+  getStatus: () => ipcRenderer.invoke('catalog:status'),
+  isAdmin: () => ipcRenderer.invoke('app:is-admin'),
+  relaunchAsAdmin: () => ipcRenderer.invoke('app:relaunch-admin'),
   getDetails: (id) => ipcRenderer.invoke('catalog:details', id),
   getSystemInfo: () => ipcRenderer.invoke('system:info'),
   getSystemStats: () => ipcRenderer.invoke('system:stats'),

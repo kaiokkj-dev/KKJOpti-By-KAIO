@@ -4,6 +4,22 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const catalog = require('./optimizations');
+const systemState = require('./system-state');
+
+const scriptsDir = path.join(app.isPackaged ? process.resourcesPath : __dirname, 'scripts');
+// Valores de registro de cada ação e conflitos entre ações (calculado uma vez).
+const analysis = systemState.analyzeCatalog(catalog, scriptsDir);
+// Resolvido no primeiro acesso: o app está rodando como administrador?
+let adminCheck = null;
+function isAdmin() {
+  // "net session" só funciona com privilégios de administrador.
+  adminCheck ||= new Promise((resolve) => {
+    const child = spawn('net.exe', ['session'], { shell: false, windowsHide: true, stdio: 'ignore' });
+    child.once('error', () => resolve(false));
+    child.once('close', (code) => resolve(code === 0));
+  });
+  return adminCheck;
+}
 
 let mainWindow;
 let logPath;
@@ -62,7 +78,12 @@ function resourcePath(item, mode = 'apply') {
 function publicItem(item) {
   const applyPath = resourcePath(item);
   const restorePath = resourcePath(item, 'restore');
-  return { ...item, available: item.kind === 'system' || Boolean(applyPath && fs.existsSync(applyPath)), restorable: Boolean(restorePath && fs.existsSync(restorePath)) };
+  return {
+    ...item,
+    available: item.kind === 'system' || Boolean(applyPath && fs.existsSync(applyPath)),
+    restorable: Boolean(restorePath && fs.existsSync(restorePath)),
+    conflicts: analysis.conflicts[item.id] || []
+  };
 }
 
 function sendProgress(payload) {
@@ -205,7 +226,9 @@ async function runQueue(ids, mode = 'apply') {
       const item = items[index];
       sendProgress({ phase: 'running', id: item.id, index: index + 1, total: items.length, label: item.title, mode });
       writeLog(`${mode.toUpperCase()} ${item.id} iniciado`);
-      const result = await executeItem(item, mode, runId);
+      const result = item.requiresAdmin && !(await isAdmin())
+        ? { ok: false, code: -1, error: 'Requer administrador. Reabra o KKJOpti como administrador.' }
+        : await executeItem(item, mode, runId);
       results.push({ id: item.id, title: item.title, ...result });
       writeLog(`${mode.toUpperCase()} ${item.id} ${result.ok ? 'sucesso' : `falha: ${result.error || result.code}`}`);
       sendProgress({ phase: result.ok ? 'success' : 'error', id: item.id, result });
@@ -229,6 +252,39 @@ function createWindow() {
 }
 
 ipcMain.handle('catalog:list', () => catalog.map(publicItem));
+
+// Estado atual do Windows: { admin, statuses: { id: true | false } }.
+// Ações sem estado (limpezas, ferramentas) ficam de fora.
+ipcMain.handle('catalog:status', async () => {
+  const [admin, snapshot] = await Promise.all([isAdmin(), systemState.readSnapshot(analysis.regSettings)]);
+  const statuses = {};
+  for (const item of catalog) {
+    const status = systemState.itemStatus(item, snapshot, analysis.regSettings);
+    if (status !== null) statuses[item.id] = status;
+  }
+  return { admin, statuses };
+});
+
+ipcMain.handle('app:is-admin', () => isAdmin());
+
+// Reabre o app pedindo permissão de administrador (UAC) e fecha esta janela.
+ipcMain.handle('app:relaunch-admin', async () => {
+  if (running) return { ok: false, reason: 'Aguarde a operação atual terminar.' };
+  const quote = (value) => `'${String(value).replace(/'/g, "''")}'`;
+  // Em desenvolvimento o electron.exe precisa receber a pasta do projeto.
+  const args = app.isPackaged ? '' : ` -ArgumentList ${quote(`"${app.getAppPath()}"`)}`;
+  const command = `Start-Process -FilePath ${quote(process.execPath)}${args} -Verb RunAs -ErrorAction Stop`;
+  // Libera o bloqueio de instância única para a nova janela conseguir abrir.
+  app.releaseSingleInstanceLock();
+  const result = await runProcess('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', command]);
+  if (result.ok) {
+    writeLog('Reaberto como administrador');
+    app.quit();
+    return { ok: true };
+  }
+  app.requestSingleInstanceLock();
+  return { ok: false, reason: 'A permissão de administrador não foi concedida.' };
+});
 ipcMain.handle('catalog:details', (_event, id) => {
   const item = catalog.find((entry) => entry.id === id);
   if (!item) return null;

@@ -27,6 +27,7 @@
       "preload.js",
       "renderer.js",
       "optimizations.js",
+      "system-state.js",
       "index.html",
       "style.css",
       "assets/**/*",
@@ -36,7 +37,11 @@
       {
         "from": "scripts",
         "to": "scripts",
-        "filter": ["**/*.bat", "**/*.cmd", "**/*.reg"]
+        "filter": [
+          "**/*.bat",
+          "**/*.cmd",
+          "**/*.reg"
+        ]
       }
     ],
     "win": {
