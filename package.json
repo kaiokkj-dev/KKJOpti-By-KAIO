@@ -53,7 +53,8 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "installerIcon": "assets/kkjopti_icon.ico",
-      "uninstallerIcon": "assets/kkjopti_icon.ico"
+      "uninstallerIcon": "assets/kkjopti_icon.ico",
+      "artifactName": "KKJOpti-Setup-${version}.${ext}"
     }
   }
 }
