@@ -13,7 +13,7 @@ const entries = [
   // Sistema
   ['telemetria', 'Reduzir telemetria', 'Define a política de diagnóstico no mínimo. No Windows Home/Pro o mínimo efetivo é "Necessário".', 'performance', 'moderate', 'Privacidade', 'telemetria.reg', 'restore_telemetria.reg'],
   ['responsiveness', 'Responsividade do sistema', 'Reserva menos CPU para tarefas em segundo plano de multimídia.', 'performance', 'moderate', 'Sistema', 'responsiveness.reg', 'restore_responsiveness.reg'],
-  ['cpu', 'Fechar Cortana e Seu Telefone', 'Encerra os processos da Cortana e do app Seu Telefone até a próxima reinicialização.', 'performance', 'safe', 'CPU', 'cpu.bat'],
+  ['cpu', 'Fechar Cortana e Vincular ao Celular', 'Encerra Cortana e Seu Telefone / Vincular ao Celular, se estiverem abertos, até a próxima reinicialização.', 'performance', 'safe', 'CPU', 'cpu.bat'],
   ['decreaseload', 'Plano Alto desempenho', 'Ativa o plano de energia "Alto desempenho" do Windows.', 'performance', 'moderate', 'Energia', 'decreaseload.bat', 'restore_powerplan.bat'],
   ['cortanaoff', 'Desativar Cortana', 'Desativa a Cortana por política do Windows.', 'performance', 'moderate', 'Sistema', 'cortanaoff.reg', 'restore_cortana.reg'],
   ['explorerspeed', 'Menus mais rápidos', 'Remove o atraso de abertura dos menus do Explorer.', 'performance', 'safe', 'Sistema', 'explorerspeed.reg', 'restore_explorerspeed.reg'],
@@ -22,12 +22,12 @@ const entries = [
 
   // Jogos e FPS
   ['fpsboost', 'Perfil FPS', 'Ativa o plano Alto desempenho e desativa o dynamic tick (requer reiniciar).', 'fps', 'advanced', 'Jogos', 'fpsboost.bat', 'restore_fpsboost.bat'],
-  ['gameboost', 'Fechar serviços do app Xbox', 'Encerra o processo XboxAppServices até a próxima reinicialização.', 'fps', 'safe', 'Jogos', 'gameboost.bat'],
+  ['gameboost', 'Fechar Xbox Game Bar', 'Encerra o app Xbox e a Xbox Game Bar, se estiverem abertos, até a próxima reinicialização.', 'fps', 'safe', 'Jogos', 'gameboost.bat'],
   ['disablegamedvr', 'Desativar gravação em segundo plano', 'Desativa a captura do Game DVR / Xbox Game Bar.', 'fps', 'moderate', 'Jogos', 'disablegamedvr.reg', 'restore_gamedvr.reg'],
   ['fullscreenoff', 'Desativar otimização de tela cheia', 'Usa tela cheia exclusiva em vez da otimização do Windows.', 'fps', 'moderate', 'Jogos', 'fullscreenoff.reg', 'restore_fullscreen.reg'],
   ['timerresolution', 'Desativar dynamic tick', 'Mantém o timer do sistema constante (requer reiniciar).', 'fps', 'advanced', 'Jogos', 'timerresolution.bat', 'restore_timerresolution.bat'],
   ['processorscheduling', 'Agendamento do processador', 'Dá mais tempo de CPU ao programa em primeiro plano.', 'fps', 'advanced', 'CPU', 'processorscheduling.reg', 'restore_processorscheduling.reg'],
-  ['coreparking', 'Desativar Core Parking', 'Mantém todos os núcleos ativos no plano de energia atual (aumenta consumo e temperatura).', 'fps', 'advanced', 'CPU', 'coreparking.bat'],
+  ['coreparking', 'Desativar Core Parking', 'Mantém todos os núcleos ativos no plano de energia atual e conserta o limite gravado pela versão antiga do app (aumenta consumo e temperatura).', 'fps', 'advanced', 'CPU', 'coreparking.bat'],
   ['memorycompression', 'Desativar compressão de memória', 'Desliga a compressão de RAM. Só vale a pena com 16 GB ou mais.', 'fps', 'advanced', 'Memória', 'memorycompression.bat', 'restore_memorycompression.bat'],
   ['inputdelay', 'Mouse e teclado (combo)', 'Aplica de uma vez "Remover aceleração do mouse" e "Resposta do teclado".', 'fps', 'moderate', 'Entrada', 'inputdelay.reg', 'restore_inputdelay.reg'],
   ['mousefix', 'Remover aceleração do mouse', 'Desativa "Aumentar precisão do ponteiro".', 'fps', 'moderate', 'Entrada', 'mousefix.reg', 'restore_mouse.reg'],
